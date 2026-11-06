@@ -1,0 +1,71 @@
+
+{% extends "appointments/base.html" %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h1>Better Conversations.<br>Better Care.</h1>
+
+        <p>
+            Your health deserves to be heard.
+            Care to Share helps you prepare for appointments,
+            organize your concerns, and keep track of
+            important information from your doctor.
+        </p>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn">
+                Go to My Dashboard
+            </a>
+        {% else %}
+            <a href="{% url 'register' %}" class="btn">
+                Get Started
+            </a>
+
+            <a href="{% url 'login' %}" class="btn-secondary">
+                Log In
+            </a>
+        {% endif %}
+
+    </div>
+
+</section>
+
+<section class="features">
+
+    <h2>How Care to Share Helps</h2>
+
+    <div class="feature-grid">
+
+        <div class="card">
+            <h3>Prepare for Your Visit</h3>
+            <p>
+                Organize symptoms, concerns, and questions
+                before meeting with your doctor.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Stay Organized</h3>
+            <p>
+                Keep your medical appointments and important
+                information together in one convenient place.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Remember What Matters</h3>
+            <p>
+                Save physician recommendations and follow-up
+                instructions so you can reference them later.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

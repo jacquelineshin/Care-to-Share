@@ -1,0 +1,16 @@
+
+{% extends "appointments/base.html" %}
+
+{% block content %}
+
+<h1>Login to Care to Share</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">Login</button>
+</form>
+
+{% endblock %}

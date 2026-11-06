@@ -1,0 +1,28 @@
+
+{% extends "appointments/base.html" %}
+
+{% block content %}
+
+<h1>Create Your Account</h1>
+
+<p>
+    Join Care to Share to organize your appointments,
+    symptoms, and questions for your doctor.
+</p>
+
+<form method="post">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">
+        Create Account
+    </button>
+</form>
+
+<p>
+    Already have an account?
+    <a href="{% url 'login' %}">Log In</a>
+</p>
+
+{% endblock %}

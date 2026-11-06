@@ -1,0 +1,30 @@
+
+{% extends "appointments/base.html" %}
+
+{% block content %}
+
+{% if editing %}
+    <h1>Edit Appointment</h1>
+{% else %}
+    <h1>Add New Appointment</h1>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">
+        {% if editing %}
+            Save Changes
+        {% else %}
+            Add Appointment
+        {% endif %}
+    </button>
+</form>
+
+<a href="{% url 'dashboard' %}">
+    Cancel
+</a>
+
+{% endblock %}

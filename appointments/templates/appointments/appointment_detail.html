@@ -1,0 +1,211 @@
+
+{% extends "appointments/base.html" %}
+
+{% block content %}
+
+<!-- Page Header -->
+
+<div class="page-header">
+    <a href="{% url 'dashboard' %}" class="back-link">
+        ← Back to Dashboard
+    </a>
+
+    <h1>Appointment Details</h1>
+    <p>
+        Review your appointment information,
+        concerns, and follow-up instructions.
+    </p>
+</div>
+
+
+<!-- Appointment Information -->
+
+<div class="card appointment-overview">
+
+    <div class="section-header">
+        <h2>Appointment Information</h2>
+
+        <div class="action-buttons">
+            <a href="{% url 'edit_appointment' appointment.pk %}"
+               class="btn-secondary">
+                Edit
+            </a>
+
+            <a href="{% url 'delete_appointment' appointment.pk %}"
+               class="btn-danger">
+                Delete
+            </a>
+        </div>
+    </div>
+
+    <div class="appointment-info">
+
+        <div>
+            <span class="info-label">Doctor</span>
+            <h3>{{ appointment.doctor_name }}</h3>
+        </div>
+
+        <div>
+            <span class="info-label">Date & Time</span>
+            <h3>
+                {{ appointment.appointment_date|date:"F j, Y, g:i A" }}
+            </h3>
+        </div>
+
+        <div>
+            <span class="info-label">Reason for Visit</span>
+            <p>{{ appointment.reason_for_visit }}</p>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Before Your Visit -->
+
+<section class="visit-section">
+
+    <div class="section-header">
+
+        <div>
+            <span class="section-tag pre-visit-tag">
+                BEFORE YOUR VISIT
+            </span>
+
+            <h2>Prepare for Your Appointment</h2>
+
+            <p>
+                Record symptoms and questions you
+                want to discuss with your doctor.
+            </p>
+        </div>
+
+        <a href="{% url 'add_health_concern' appointment.pk %}"
+           class="btn">
+            + Add Concern
+        </a>
+
+    </div>
+
+    {% for concern in appointment.concerns.all %}
+
+        <div class="card concern-card">
+
+            <div class="concern-header">
+                <h3>{{ concern.symptom }}</h3>
+
+                <span class="severity-badge">
+                    Severity: {{ concern.severity }}/10
+                </span>
+            </div>
+
+            <p>{{ concern.description }}</p>
+
+            {% if concern.question_for_doctor %}
+                <div class="question-box">
+                    <strong>Question for Doctor:</strong>
+                    <p>{{ concern.question_for_doctor }}</p>
+                </div>
+            {% endif %}
+
+        </div>
+
+    {% empty %}
+
+        <div class="card empty-state">
+            <h3>No concerns added yet</h3>
+
+            <p>
+                Add symptoms or questions you want
+                to remember during your appointment.
+            </p>
+        </div>
+
+    {% endfor %}
+
+</section>
+
+
+<!-- After Your Visit -->
+
+<section class="visit-section">
+
+    <div class="section-header">
+
+        <div>
+            <span class="section-tag post-visit-tag">
+                AFTER YOUR VISIT
+            </span>
+
+            <h2>Doctor's Instructions</h2>
+
+            <p>
+                Keep track of recommendations and
+                follow-up steps from your doctor.
+            </p>
+        </div>
+
+        <a href="{% url 'add_visit_instruction' appointment.pk %}"
+           class="btn">
+            + Add Instruction
+        </a>
+
+    </div>
+
+    {% for instruction in appointment.instructions.all %}
+
+        <div class="card instruction-card">
+
+            <p>{{ instruction.instruction }}</p>
+
+            {% if instruction.completed %}
+
+                <span class="status-badge completed">
+                    ✓ Completed
+                </span>
+
+            {% else %}
+
+                <span class="status-badge pending">
+                    Not Completed
+                </span>
+
+            {% endif %}
+
+            <form method="post"
+                  action="{% url 'toggle_instruction' instruction.pk %}"
+                  class="toggle-form">
+
+                {% csrf_token %}
+
+                <button type="submit" class="btn-secondary">
+
+                    {% if instruction.completed %}
+                        Mark as Not Completed
+                    {% else %}
+                        Mark as Completed
+                    {% endif %}
+
+                </button>
+
+            </form>
+
+        </div>
+
+    {% empty %}
+
+        <div class="card empty-state">
+            <h3>No instructions recorded</h3>
+
+            <p>
+                After your appointment, you can
+                save recommendations from your doctor here.
+            </p>
+        </div>
+
+    {% endfor %}
+
+</section>
+
+{% endblock %}

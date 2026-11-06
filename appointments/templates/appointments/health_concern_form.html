@@ -1,0 +1,34 @@
+
+{% extends "appointments/base.html" %}
+
+{% block content %}
+
+<h1>Pre-Visit Questionnaire</h1>
+
+<h2>Appointment with {{ appointment.doctor_name }}</h2>
+
+<p>
+    Use this form to record any symptoms or concerns
+    you want to discuss during your appointment.
+</p>
+
+<p>
+    You can add multiple concerns to the same appointment.
+</p>
+
+<form method="post">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">
+        Save Health Concern
+    </button>
+</form>
+
+<a href="{% url 'appointment_detail' appointment.pk %}">
+    Back to Appointment
+</a>
+
+{% endblock %}
+

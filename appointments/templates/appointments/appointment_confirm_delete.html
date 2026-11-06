@@ -1,0 +1,35 @@
+
+{% extends "appointments/base.html" %}
+
+{% block content %}
+
+<h1>Delete Appointment</h1>
+
+<p>
+    Are you sure you want to delete your appointment
+    with {{ appointment.doctor_name }}?
+</p>
+
+<p>
+    Date:
+    {{ appointment.appointment_date|date:"F j, Y" }}
+</p>
+
+<p>
+    Warning: Any health concerns or visit instructions
+    associated with this appointment will also be deleted.
+</p>
+
+<form method="post">
+    {% csrf_token %}
+
+    <button type="submit">
+        Yes, Delete Appointment
+    </button>
+</form>
+
+<a href="{% url 'appointment_detail' appointment.pk %}">
+    Cancel
+</a>
+
+{% endblock %}

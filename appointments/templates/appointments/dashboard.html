@@ -1,0 +1,91 @@
+
+{% extends "appointments/base.html" %}
+
+{% block content %}
+
+<div class="dashboard-header">
+
+    <div>
+        <h1>My Dashboard</h1>
+        <p>
+            Welcome back, {{ user.username }}!
+            Manage your appointments and prepare for your visits.
+        </p>
+    </div>
+
+    <a href="{% url 'create_appointment' %}" class="btn">
+        + New Appointment
+    </a>
+
+</div>
+
+<div class="card">
+
+    <h3>Find an Appointment</h3>
+
+    <form method="get" action="{% url 'dashboard' %}"
+          class="search-form">
+
+        <input
+            type="text"
+            name="q"
+            value="{{ query }}"
+            placeholder="Search by doctor or reason for visit..."
+        >
+
+        <button type="submit" class="btn">
+            Search
+        </button>
+
+        <a href="{% url 'dashboard' %}"
+           class="btn-secondary">
+            Clear
+        </a>
+
+    </form>
+
+</div>
+
+<h2>Your Appointments</h2>
+
+<div class="appointment-grid">
+
+    {% for appointment in appointments %}
+
+        <div class="card appointment-card">
+
+            <span class="appointment-date">
+                {{ appointment.appointment_date|date:"M d, Y" }}
+            </span>
+
+            <h3>{{ appointment.doctor_name }}</h3>
+
+            <p>
+                {{ appointment.reason_for_visit|truncatewords:20 }}
+            </p>
+
+            <a href="{% url 'appointment_detail' appointment.pk %}"
+               class="btn-secondary">
+                View Details
+            </a>
+
+        </div>
+
+    {% empty %}
+
+        <div class="card">
+            {% if query %}
+                <p>No appointments match your search.</p>
+            {% else %}
+                <p>
+                    You haven't added any appointments yet.
+                    Start by creating your first appointment!
+                </p>
+            {% endif %}
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}
