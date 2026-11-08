@@ -3,28 +3,36 @@
 
 {% block content %}
 
-{% if editing %}
-    <h1>Edit Appointment</h1>
-{% else %}
-    <h1>Add New Appointment</h1>
-{% endif %}
+<div class="card">
 
-<form method="post">
-    {% csrf_token %}
+    {% if editing %}
+        <h1>Edit Appointment</h1>
+    {% else %}
+        <h1>Add New Appointment</h1>
+    {% endif %}
 
-    {{ form.as_p }}
+    <p>
+        Enter your appointment information below.
+    </p>
 
-    <button type="submit">
-        {% if editing %}
-            Save Changes
-        {% else %}
-            Add Appointment
-        {% endif %}
-    </button>
-</form>
+    <form method="post">
+        {% csrf_token %}
 
-<a href="{% url 'dashboard' %}">
-    Cancel
-</a>
+        {{ form.as_p }}
+
+        <button type="submit" class="btn">
+            {% if editing %}
+                Save Changes
+            {% else %}
+                Add Appointment
+            {% endif %}
+        </button>
+    </form>
+
+    <a href="{% url 'dashboard' %}" class="back-link">
+        Cancel
+    </a>
+
+</div>
 
 {% endblock %}

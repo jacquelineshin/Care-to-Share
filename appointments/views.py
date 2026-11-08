@@ -1,13 +1,9 @@
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Appointment
 from django.shortcuts import redirect
 from django.contrib import messages
-from .forms import AppointmentForm
-from .forms import AppointmentForm, HealthConcernForm
 from django.contrib.auth import login
-from .forms import RegisterForm
 from django.db.models import Q
 from django.http import JsonResponse
 from .forms import (
@@ -15,9 +11,10 @@ from .forms import (
     HealthConcernForm,
     RegisterForm,
     VisitInstructionForm,
+    HealthConcern,
 )
-from .models import Appointment, VisitInstruction
-
+from django.db.models import Case, When, Value, IntegerField
+from .models import Appointment, HealthConcern, VisitInstruction
 def home(request):
     return render(request, "appointments/home.html")
 
@@ -53,18 +50,63 @@ def dashboard(request):
 
 
 @login_required
+
+@login_required
 def appointment_detail(request, pk):
+
     appointment = get_object_or_404(
         Appointment,
         pk=pk,
         user=request.user
     )
 
+    concerns = appointment.concerns.annotate(
+        priority_order=Case(
+            When(priority="high", then=Value(1)),
+            When(priority="medium", then=Value(2)),
+            When(priority="low", then=Value(3)),
+            default=Value(4),
+            output_field=IntegerField(),
+        )
+    ).order_by("priority_order", "-severity")
+
     return render(
         request,
         "appointments/appointment_detail.html",
-        {"appointment": appointment}
+        {
+            "appointment": appointment,
+            "concerns": concerns
+        }
     )
+
+@login_required
+def pre_visit_summary(request, pk):
+
+    appointment = get_object_or_404(
+        Appointment,
+        pk=pk,
+        user=request.user
+    )
+
+    concerns = appointment.concerns.annotate(
+        priority_order=Case(
+            When(priority="high", then=Value(1)),
+            When(priority="medium", then=Value(2)),
+            When(priority="low", then=Value(3)),
+            default=Value(4),
+            output_field=IntegerField(),
+        )
+    ).order_by("priority_order", "-severity")
+
+    return render(
+        request,
+        "appointments/pre_visit_summary.html",
+        {
+            "appointment": appointment,
+            "concerns": concerns,
+        }
+    )
+
 
 @login_required
 def create_appointment(request):
@@ -227,6 +269,34 @@ def register(request):
     )
 
 @login_required
+def delete_visit_instruction(request, pk):
+    instruction = get_object_or_404(
+        VisitInstruction,
+        pk=pk,
+        appointment__user=request.user
+    )
+
+    if request.method == "POST":
+        appointment_pk = instruction.appointment.pk
+        instruction.delete()
+
+        messages.success(
+            request,
+            "Your visit instruction was deleted successfully."
+        )
+
+        return redirect(
+            "appointment_detail",
+            pk=appointment_pk
+        )
+
+    return render(
+        request,
+        "appointments/visit_instruction_confirm_delete.html",
+        {"instruction": instruction}
+    )
+
+@login_required
 def appointments_api(request):
 
     appointments = Appointment.objects.filter(
@@ -327,4 +397,118 @@ def toggle_instruction(request, pk):
     return redirect(
         "appointment_detail",
         pk=instruction.appointment.pk
+    )
+
+
+@login_required
+def edit_health_concern(request, pk):
+
+    concern = get_object_or_404(
+        HealthConcern,
+        pk=pk,
+        appointment__user=request.user
+    )
+
+    if request.method == "POST":
+        form = HealthConcernForm(
+            request.POST,
+            instance=concern
+        )
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(
+                request,
+                "Your health concern was updated successfully!"
+            )
+
+            return redirect(
+                "appointment_detail",
+                pk=concern.appointment.pk
+            )
+
+    else:
+        form = HealthConcernForm(instance=concern)
+
+    return render(
+        request,
+        "appointments/health_concern_form.html",
+        {
+            "form": form,
+            "appointment": concern.appointment,
+            "editing": True,
+        }
+    )
+
+@login_required
+def delete_health_concern(request, pk):
+
+    concern = get_object_or_404(
+        HealthConcern,
+        pk=pk,
+        appointment__user=request.user
+    )
+
+    if request.method == "POST":
+
+        appointment_pk = concern.appointment.pk
+
+        concern.delete()
+
+        messages.success(
+            request,
+            "Your health concern was deleted successfully."
+        )
+
+        return redirect(
+            "appointment_detail",
+            pk=appointment_pk
+        )
+
+    return render(
+        request,
+        "appointments/health_concern_confirm_delete.html",
+        {"concern": concern}
+    )
+
+@login_required
+def edit_visit_instruction(request, pk):
+
+    instruction = get_object_or_404(
+        VisitInstruction,
+        pk=pk,
+        appointment__user=request.user
+    )
+
+    if request.method == "POST":
+        form = VisitInstructionForm(
+            request.POST,
+            instance=instruction
+        )
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(
+                request,
+                "Your visit instruction was updated successfully!"
+            )
+
+            return redirect(
+                "appointment_detail",
+                pk=instruction.appointment.pk
+            )
+
+    else:
+        form = VisitInstructionForm(instance=instruction)
+
+    return render(
+        request,
+        "appointments/visit_instruction_form.html",
+        {
+            "form": form,
+            "appointment": instruction.appointment,
+            "editing": True,
+        }
     )

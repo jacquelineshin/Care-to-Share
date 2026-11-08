@@ -1,7 +1,5 @@
 
 from django import forms
-from .models import Appointment
-from .models import HealthConcern
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Appointment, HealthConcern, VisitInstruction
@@ -48,14 +46,59 @@ class HealthConcernForm(forms.ModelForm):
             "symptom",
             "description",
             "severity",
+            "onset_date",
+            "frequency",
+            "duration",
+            "triggers",
+            "relieving_factors",
+            "priority",
             "question_for_doctor",
         ]
-
+        labels = {
+            # Your other existing labels
+            "onset_date": "When did you first notice this symptom?",
+            "triggers": "What makes your symptoms worse?",
+            "relieving_factors": "What makes your symptoms better?",
+        }
         widgets = {
             "description": forms.Textarea(
                 attrs={
                     "rows": 4,
                     "placeholder": "Describe what you've been experiencing..."
+                }
+            ),
+            "appointment_date": forms.DateTimeInput(
+                attrs={
+                    "type": "datetime-local",
+                },
+                format="%Y-%m-%dT%H:%M"
+            ),
+            "onset_date": forms.DateInput(
+                attrs={
+                    "type": "date",
+                },
+                format="%Y-%m-%d"
+            ),
+
+            "triggers": forms.Textarea(
+                attrs={
+                    "rows": 3,
+                    "placeholder": (
+                        "What seems to make your symptoms worse? "
+                        "For example: walking, exercise, stress, "
+                        "certain foods, or lack of sleep."
+                    ),
+                }
+            ),
+
+            "relieving_factors": forms.Textarea(
+                attrs={
+                    "rows": 3,
+                    "placeholder": (
+                        "What seems to make your symptoms better? "
+                        "For example: resting, sitting down, "
+                        "drinking water, or taking a break."
+                    ),
                 }
             ),
 

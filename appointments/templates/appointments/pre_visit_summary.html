@@ -1,0 +1,234 @@
+
+{% extends "appointments/base.html" %}
+
+{% block content %}
+
+<div class="summary-container">
+
+    <!-- Page Actions -->
+
+    <div class="summary-actions">
+
+        <a href="{% url 'appointment_detail' appointment.pk %}"
+           class="back-link">
+            ← Back to Appointment
+        </a>
+
+        <button type="button"
+                onclick="window.print()"
+                class="btn">
+            Print / Save as PDF
+        </button>
+
+    </div>
+
+
+    <!-- Preparation Sheet -->
+
+    <div class="card summary-document">
+
+        <div class="summary-heading">
+
+            <h1>My Appointment Preparation Sheet</h1>
+
+            <p>
+                Prepared with Care to Share
+            </p>
+
+        </div>
+
+        <hr>
+
+
+        <!-- Appointment Information -->
+
+        <h2>Appointment Information</h2>
+
+        <div class="summary-info-grid">
+
+            <div>
+                <span class="info-label">Healthcare Provider</span>
+                <p>{{ appointment.doctor_name }}</p>
+            </div>
+
+            <div>
+                <span class="info-label">Appointment Date</span>
+                <p>
+                    {{ appointment.appointment_date|date:"F j, Y, g:i A" }}
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- Main Reason for Visit -->
+
+        <div class="summary-reason">
+
+            <h3>Main Reason for Visit</h3>
+
+            <p>{{ appointment.reason_for_visit }}</p>
+
+        </div>
+
+        <hr>
+
+
+        <!-- Priority Concerns -->
+
+        <h2>My Main Concerns</h2>
+
+        <p class="summary-description">
+            These are the symptoms and concerns
+            I would like to discuss during my appointment.
+        </p>
+
+        {% for concern in concerns %}
+
+            <div class="summary-concern">
+
+                <div class="summary-concern-header">
+
+                    <h3>
+                        {{ forloop.counter }}.
+                        {{ concern.symptom }}
+                    </h3>
+
+                    <span class="priority-badge priority-{{ concern.priority }}">
+                        {{ concern.get_priority_display }} Priority
+                    </span>
+
+                </div>
+
+                <p>
+                    <strong>Severity:</strong>
+                    {{ concern.severity }}/10
+                </p>
+
+                <p>
+                    {{ concern.description }}
+                </p>
+
+                <!-- Combined Symptom Details -->
+
+                <div class="summary-symptom-info">
+
+                    {% if concern.onset_date %}
+                        <p>
+                            <strong>First noticed:</strong>
+                            {{ concern.onset_date|date:"F j, Y" }}
+                        </p>
+                    {% endif %}
+
+                    {% if concern.frequency %}
+                        <p>
+                            <strong>Frequency:</strong>
+                            {{ concern.get_frequency_display }}
+                        </p>
+                    {% endif %}
+
+                    {% if concern.duration %}
+                        <p>
+                            <strong>Duration:</strong>
+                            {{ concern.duration }}
+                        </p>
+                    {% endif %}
+
+                    {% if concern.triggers %}
+                        <p>
+                            <strong>Worsened by:</strong>
+                            {{ concern.triggers }}
+                        </p>
+                    {% endif %}
+
+                    {% if concern.relieving_factors %}
+                        <p>
+                            <strong>Improved by:</strong>
+                            {{ concern.relieving_factors }}
+                        </p>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <p>
+                No health concerns have been recorded
+                for this appointment.
+            </p>
+
+        {% endfor %}
+
+        <hr>
+
+
+        <!-- Questions for Doctor -->
+
+        <h2>Questions for My Doctor</h2>
+
+        <p class="summary-description">
+            Check off each question as you discuss it.
+        </p>
+
+        <div class="summary-questions">
+
+            {% for concern in concerns %}
+
+                {% if concern.question_for_doctor %}
+
+                    <div class="summary-question-item">
+
+                        <input type="checkbox"
+                               id="question-{{ concern.pk }}">
+
+                        <label for="question-{{ concern.pk }}">
+                            {{ concern.question_for_doctor }}
+                        </label>
+
+                    </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+
+        <hr>
+
+
+        <!-- Appointment Notes -->
+
+        <h2>Notes From My Appointment</h2>
+
+        <p class="summary-description">
+            Use this space to write down important
+            answers, recommendations, or follow-up steps.
+        </p>
+
+        <div class="notes-section">
+
+            <div class="note-line"></div>
+            <div class="note-line"></div>
+            <div class="note-line"></div>
+            <div class="note-line"></div>
+            <div class="note-line"></div>
+
+        </div>
+
+
+        <!-- Footer -->
+
+        <p class="summary-footer">
+            This document was prepared by the patient
+            to support communication with their healthcare provider.
+            It is not a medical assessment.
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -85,44 +85,134 @@
            class="btn">
             + Add Concern
         </a>
-
+        <a href="{% url 'pre_visit_summary' appointment.pk %}"
+            class="btn-secondary">
+                View Pre-Visit Summary
+        </a>
     </div>
 
-    {% for concern in appointment.concerns.all %}
+
+    {% for concern in concerns %}
 
         <div class="card concern-card">
 
+            <!-- Symptom and Priority -->
+
             <div class="concern-header">
+
                 <h3>{{ concern.symptom }}</h3>
 
-                <span class="severity-badge">
-                    Severity: {{ concern.severity }}/10
-                </span>
+                <div class="concern-badges">
+
+                    <span class="priority-badge priority-{{ concern.priority }}">
+                        {{ concern.get_priority_display }} Priority
+                    </span>
+
+                    <span class="severity-badge">
+                        Severity: {{ concern.severity }}/10
+                    </span>
+
+                </div>
+
             </div>
+
+            <!-- Description -->
 
             <p>{{ concern.description }}</p>
 
-            {% if concern.question_for_doctor %}
-                <div class="question-box">
-                    <strong>Question for Doctor:</strong>
-                    <p>{{ concern.question_for_doctor }}</p>
+            <!-- Additional Symptom Details -->
+
+
+                {% if concern.onset_date or concern.frequency or concern.duration or concern.triggers or concern.relieving_factors %}
+
+                    <div class="symptom-details">
+
+
+                {% if concern.onset_date %}
+                    <div>
+                        <span class="info-label">First Noticed</span>
+                        <p>{{ concern.onset_date|date:"F j, Y" }}</p>
+                    </div>
+                {% endif %}
+
+                {% if concern.frequency %}
+                    <div>
+                        <span class="info-label">Frequency</span>
+                        <p>{{ concern.get_frequency_display }}</p>
+                    </div>
+                {% endif %}
+
+                {% if concern.duration %}
+                    <div>
+                        <span class="info-label">Typical Duration</span>
+                        <p>{{ concern.duration }}</p>
+                    </div>
+                {% endif %}
+
+                {% if concern.triggers %}
+                    <div>
+                        <span class="info-label">Possible Triggers</span>
+                        <p>{{ concern.triggers }}</p>
+                    </div>
+                {% endif %}
+
+                {% if concern.relieving_factors %}
+                    <div>
+                        <span class="info-label">Relieving Factors</span>
+                        <p>{{ concern.relieving_factors }}</p>
+                    </div>
+                {% endif %}
+
                 </div>
             {% endif %}
 
-        </div>
+
+                <!-- End of symptom-details -->
+
+                <!-- Question for Doctor -->
+
+                {% if concern.question_for_doctor %}
+                    <div class="question-box">
+                        <strong>Question for Doctor:</strong>
+                        <p>{{ concern.question_for_doctor }}</p>
+                    </div>
+                {% endif %}
+
+                <!-- Edit and Delete Buttons -->
+
+                <div class="concern-actions">
+
+                    <a href="{% url 'edit_health_concern' concern.pk %}"
+                       class="btn-secondary">
+                        Edit Concern
+                    </a>
+
+                    <a href="{% url 'delete_health_concern' concern.pk %}"
+                       class="btn-danger">
+                        Delete Concern
+                    </a>
+
+                </div>
+
+            </div>
+
+
 
     {% empty %}
 
-        <div class="card empty-state">
-            <h3>No concerns added yet</h3>
+    <div class="card empty-state">
 
-            <p>
-                Add symptoms or questions you want
-                to remember during your appointment.
-            </p>
-        </div>
+        <h3>No concerns added yet</h3>
 
-    {% endfor %}
+        <p>
+            Add symptoms or questions you want
+            to discuss during your appointment.
+        </p>
+
+    </div>
+
+{% endfor %}
+
 
 </section>
 
@@ -190,6 +280,20 @@
                 </button>
 
             </form>
+                                
+                <div class="instruction-actions">
+
+                    <a href="{% url 'edit_visit_instruction' instruction.pk %}"
+                       class="btn-secondary">
+                        Edit Instruction
+                    </a>
+
+                    <a href="{% url 'delete_visit_instruction' instruction.pk %}"
+                       class="btn-danger">
+                        Delete Instruction
+                    </a>
+
+                </div>
 
         </div>
 

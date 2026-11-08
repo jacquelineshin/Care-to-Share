@@ -569,3 +569,264 @@ button {
 .instruction-card .status-badge {
     margin-right: 10px;
 }
+/* Improve instruction button spacing */
+/* Health Concern Form Spacing */
+
+.card form:not(.toggle-form) {
+    margin-top: 25px;
+}
+
+.card form p {
+    margin: 0 0 20px;
+}
+
+.card form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.card form input,
+.card form textarea,
+.card form select {
+    margin-bottom: 0;
+}
+
+.card form button.btn {
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.card .back-link {
+    display: inline-block;
+    margin-top: 15px;
+}
+
+/* Consistent Save Buttons */
+
+button.btn,
+input[type="submit"].btn {
+    display: inline-block;
+    background-color: #2c7771;
+    color: #ffffff;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.4;
+    cursor: pointer;
+    box-shadow: none;
+    appearance: none;
+}
+
+button.btn:hover,
+input[type="submit"].btn:hover {
+    background-color: #215c57;
+    color: #ffffff;
+}
+
+/* Instruction Card Layout */
+
+.instruction-card {
+    padding: 25px;
+}
+
+.instruction-card .status-badge {
+    display: inline-block;
+    margin-bottom: 4px;
+}
+
+.instruction-card .toggle-form {
+    margin: 18px 0 0;
+}
+
+.instruction-card .toggle-form button {
+    border: none;
+    box-shadow: none;
+    padding: 11px 20px;
+    font-family: inherit;
+    font-size: 14px;
+    border-radius: 8px;
+}
+
+.instruction-card .instruction-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.instruction-card .instruction-actions a {
+    display: inline-block;
+    padding: 11px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.4;
+    text-decoration: none;
+}
+
+/* Improved Pre-Visit Summary */
+
+.summary-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.summary-info-grid p {
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+.summary-reason {
+    background-color: #e8f4f1;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 25px 0;
+}
+
+.summary-reason h3 {
+    margin-top: 0;
+    color: #215c57;
+}
+
+.summary-description {
+    color: #6c7b86;
+    margin-bottom: 25px;
+}
+
+/* Concern Summary */
+
+.summary-concern {
+    padding: 20px 0;
+    border-bottom: 1px solid #e4e9ed;
+}
+
+.summary-concern-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.summary-concern-header h3 {
+    margin-top: 0;
+}
+
+.summary-symptom-info {
+    background-color: #f7f9fc;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.summary-symptom-info p {
+    margin: 6px 0;
+}
+
+/* Questions Checklist */
+
+.summary-questions {
+    margin: 25px 0;
+}
+
+.summary-question-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 15px;
+    padding: 12px;
+    background-color: #f7f9fc;
+    border-radius: 8px;
+}
+
+.summary-question-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 4px;
+    flex-shrink: 0;
+    accent-color: #2c7771;
+}
+
+.summary-question-item label {
+    font-weight: 400;
+    margin: 0;
+    cursor: pointer;
+}
+
+/* Appointment Notes */
+
+.notes-section {
+    margin-top: 25px;
+    margin-bottom: 40px;
+}
+
+.note-line {
+    height: 40px;
+    border-bottom: 1px solid #cdd8de;
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+
+    .summary-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-concern-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .summary-document {
+        padding: 25px;
+    }
+
+}
+
+/* Print */
+
+@media print {
+
+    .summary-actions,
+    .navbar,
+    .footer {
+        display: none !important;
+    }
+
+    body {
+        background: white;
+    }
+
+    .main-content {
+        margin: 0;
+        padding: 0;
+        max-width: none;
+    }
+
+    .summary-document {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+    }
+
+    .summary-question-item {
+        background: white;
+        border: 1px solid #ddd;
+    }
+
+    .summary-concern,
+    .summary-question-item {
+        break-inside: avoid;
+    }
+
+    .note-line {
+        border-bottom: 1px solid #999;
+    }
+
+}

@@ -3,27 +3,47 @@
 
 {% block content %}
 
-<h1>Post-Visit Instructions</h1>
+<div class="card">
 
-<h2>Appointment with {{ appointment.doctor_name }}</h2>
+    {% if editing %}
+        <h1>Edit Visit Instruction</h1>
 
-<p>
-    Record any recommendations, instructions,
-    or follow-up steps provided by your doctor.
-</p>
+        <p>
+            Update your doctor's recommendations
+            or follow-up instructions.
+        </p>
+    {% else %}
+        <h1>Post-Visit Instructions</h1>
 
-<form method="post">
-    {% csrf_token %}
+        <p>
+            Record recommendations and follow-up
+            steps provided by your doctor.
+        </p>
+    {% endif %}
 
-    {{ form.as_p }}
+    <h3>
+        Appointment with {{ appointment.doctor_name }}
+    </h3>
 
-    <button type="submit">
-        Save Instruction
-    </button>
-</form>
+    <form method="post">
+        {% csrf_token %}
 
-<a href="{% url 'appointment_detail' appointment.pk %}">
-    Back to Appointment
-</a>
+        {{ form.as_p }}
+
+        <button type="submit" class="btn">
+            {% if editing %}
+                Save Changes
+            {% else %}
+                Save Instruction
+            {% endif %}
+        </button>
+    </form>
+
+    <a href="{% url 'appointment_detail' appointment.pk %}"
+       class="back-link">
+        Cancel
+    </a>
+
+</div>
 
 {% endblock %}
