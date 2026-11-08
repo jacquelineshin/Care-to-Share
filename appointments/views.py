@@ -512,3 +512,108 @@ def edit_visit_instruction(request, pk):
             "editing": True,
         }
     )
+
+@login_required
+def symptom_history(request):
+
+    concerns = HealthConcern.objects.filter(
+        appointment__user=request.user
+    ).select_related(
+        "appointment"
+    ).order_by(
+        "appointment__appointment_date"
+    )
+
+    symptom_groups = {}
+
+    for concern in concerns:
+
+        symptom_name = concern.symptom.strip().lower()
+
+        if symptom_name not in symptom_groups:
+            symptom_groups[symptom_name] = {
+                "name": concern.symptom.strip(),
+                "records": [],
+            }
+
+        symptom_groups[symptom_name]["records"].append(
+            concern
+        )
+
+    history = list(symptom_groups.values())
+
+    history.sort(key=lambda item: item["name"].lower())
+
+    return render(
+        request,
+        "appointments/symptom_history.html",
+        {
+            "history": history,
+        }
+    )
+
+@login_required
+def post_visit_dashboard(request):
+
+    instructions = VisitInstruction.objects.filter(
+        appointment__user=request.user
+    ).select_related("appointment")
+
+    # Overall statistics
+    total_tasks = instructions.count()
+    completed_tasks = instructions.filter(completed=True).count()
+    remaining_tasks = total_tasks - completed_tasks
+
+    completion_percentage = (
+        round(completed_tasks / total_tasks * 100)
+        if total_tasks > 0 else 0
+    )
+
+    # Get filter selections
+    selected_category = request.GET.get("category", "")
+    selected_status = request.GET.get("status", "")
+
+    valid_categories = dict(VisitInstruction.CATEGORY_CHOICES)
+
+    if selected_category in valid_categories:
+        instructions = instructions.filter(
+            category=selected_category
+        )
+
+    if selected_status == "completed":
+        instructions = instructions.filter(completed=True)
+
+    elif selected_status == "pending":
+        instructions = instructions.filter(completed=False)
+
+    # Organize instructions by category
+    grouped_instructions = []
+
+    for category_value, category_name in VisitInstruction.CATEGORY_CHOICES:
+
+        category_tasks = list(
+            instructions.filter(
+                category=category_value
+            ).order_by("due_date", "id")
+        )
+
+        if category_tasks:
+            grouped_instructions.append({
+                "name": category_name,
+                "tasks": category_tasks,
+            })
+
+    return render(
+        request,
+        "appointments/post_visit_dashboard.html",
+        {
+            "grouped_instructions": grouped_instructions,
+            "total_tasks": total_tasks,
+            "completed_tasks": completed_tasks,
+            "remaining_tasks": remaining_tasks,
+            "completion_percentage": completion_percentage,
+            "categories": VisitInstruction.CATEGORY_CHOICES,
+            "selected_category": selected_category,
+            "selected_status": selected_status,
+        }
+    )

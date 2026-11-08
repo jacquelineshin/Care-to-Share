@@ -249,6 +249,20 @@
 
             <p>{{ instruction.instruction }}</p>
 
+                <div class="instruction-details">
+
+                    <span class="instruction-category">
+                        {{ instruction.get_category_display }}
+                    </span>
+
+                    {% if instruction.due_date %}
+                        <p class="instruction-due-date">
+                            Due: {{ instruction.due_date|date:"F j, Y" }}
+                        </p>
+                    {% endif %}
+
+                </div>
+
             {% if instruction.completed %}
 
                 <span class="status-badge completed">

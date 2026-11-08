@@ -150,21 +150,42 @@ class RegisterForm(UserCreationForm):
 
         return email
 
+
 class VisitInstructionForm(forms.ModelForm):
+
     class Meta:
         model = VisitInstruction
 
         fields = [
             "instruction",
+            "category",
+            "due_date",
             "completed",
         ]
+
+        labels = {
+            "instruction": "What did your doctor recommend?",
+            "category": "Instruction Category",
+            "due_date": "When should this be completed?",
+            "completed": "Already completed?",
+        }
 
         widgets = {
             "instruction": forms.Textarea(
                 attrs={
                     "rows": 4,
-                    "placeholder": "Enter your doctor's recommendations or follow-up instructions..."
+                    "placeholder": (
+                        "Enter your doctor's recommendation "
+                        "or follow-up instruction..."
+                    ),
                 }
+            ),
+
+            "due_date": forms.DateInput(
+                attrs={
+                    "type": "date",
+                },
+                format="%Y-%m-%d"
             ),
         }
 
@@ -177,3 +198,4 @@ class VisitInstructionForm(forms.ModelForm):
             )
 
         return instruction
+

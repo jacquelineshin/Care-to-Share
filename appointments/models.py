@@ -93,13 +93,38 @@ class HealthConcern(models.Model):
 
 
 class VisitInstruction(models.Model):
+
+    CATEGORY_CHOICES = [
+        ("medication", "Medications"),
+        ("follow_up", "Follow-Up Appointments"),
+        ("lifestyle", "Lifestyle Recommendations"),
+        ("tests", "Tests and Procedures"),
+        ("other", "Other Instructions"),
+    ]
+
     appointment = models.ForeignKey(
         Appointment,
         on_delete=models.CASCADE,
         related_name="instructions"
     )
+
     instruction = models.TextField()
-    completed = models.BooleanField(default=False)
+
+    category = models.CharField(
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+        default="other"
+    )
+
+    due_date = models.DateField(
+        null=True,
+        blank=True
+    )
+
+    completed = models.BooleanField(
+        default=False
+    )
 
     def __str__(self):
         return self.instruction[:50]
+

@@ -1,0 +1,154 @@
+
+{% extends "appointments/base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <a href="{% url 'dashboard' %}" class="back-link">
+        ← Back to Dashboard
+    </a>
+
+    <h1>My Symptom History</h1>
+
+    <p>
+        Review symptoms you've recorded across
+        appointments and see how they change over time.
+    </p>
+
+</div>
+
+{% if history %}
+
+    {% for symptom in history %}
+
+        <div class="card symptom-history-card">
+
+            <h2>{{ symptom.name|title }}</h2>
+
+            <p>
+                <strong>
+                    {{ symptom.records|length }}
+                </strong>
+                recorded observation(s)
+            </p>
+
+            <div class="history-records">
+
+                {% for record in symptom.records %}
+
+<!-- Symptom Severity Chart -->
+
+                <div class="severity-chart">
+
+                    <h3>Severity Over Time</h3>
+
+                    <p class="chart-description">
+                        Compare your recorded symptom severity
+                        across appointments.
+                    </p>
+
+                    {% for record in symptom.records %}
+
+                        <div class="chart-row">
+
+                            <span class="chart-date">
+                                {{ record.appointment.appointment_date|date:"M d, Y" }}
+                            </span>
+
+                            <div class="chart-bar-background">
+
+                                <div class="chart-bar"
+                                     style="width: {% widthratio record.severity 10 100 %}%;">
+                                </div>
+
+                            </div>
+
+                            <span class="chart-value">
+                                {{ record.severity }}/10
+                            </span>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+                    <div class="history-record">
+
+                        <div class="history-record-header">
+
+                            <h3>
+                                {{ record.appointment.appointment_date|date:"F j, Y" }}
+                            </h3>
+
+                            <span class="severity-badge">
+                                Severity: {{ record.severity }}/10
+                            </span>
+
+                        </div>
+
+                        <p>{{ record.description }}</p>
+
+                        {% if record.frequency %}
+                            <p>
+                                <strong>Frequency:</strong>
+                                {{ record.get_frequency_display }}
+                            </p>
+                        {% endif %}
+
+                        {% if record.duration %}
+                            <p>
+                                <strong>Duration:</strong>
+                                {{ record.duration }}
+                            </p>
+                        {% endif %}
+
+                        {% if record.triggers %}
+                            <p>
+                                <strong>Possible Triggers:</strong>
+                                {{ record.triggers }}
+                            </p>
+                        {% endif %}
+
+                        {% if record.relieving_factors %}
+                            <p>
+                                <strong>Relieving Factors:</strong>
+                                {{ record.relieving_factors }}
+                            </p>
+                        {% endif %}
+
+                        <a href="{% url 'appointment_detail' record.appointment.pk %}">
+                            View Appointment
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <div class="card empty-state">
+
+        <h2>No Symptoms Recorded Yet</h2>
+
+        <p>
+            Once you record symptoms during appointment
+            preparation, they'll appear here.
+        </p>
+
+        <a href="{% url 'dashboard' %}" class="btn">
+            Go to Dashboard
+        </a>
+
+    </div>
+
+{% endif %}
+
+{% endblock %}
