@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+{% extends "appointments/base.html" %}
+
+{% block content %}
+
+<div class="page-container">
+
+    <h1>Recommended Educational Resources</h1>
+
+    <p>
+        Explore educational resources related to your health concern.
+        These materials can help you learn more and prepare questions
+        for your healthcare provider.
+    </p>
+
+    <div class="card">
+
+        <h2>Your Health Concern</h2>
+
+        <h3>{{ concern.symptom }}</h3>
+
+        <p>{{ concern.description }}</p>
+
+    </div>
+
+    <h2>Suggested Resources</h2>
+
+    {% if recommendations %}
+
+        {% for item in recommendations %}
+
+            <div class="card">
+
+                <h3>{{ item.resource.title }}</h3>
+
+                <p>{{ item.resource.description }}</p>
+
+                <p>
+        <p>
+            <strong>Similarity Score:</strong>
+                {{ item.score }}
+        </p>
+                    <strong>Topic:</strong>
+                    {{ item.resource.topic }}
+                </p>
+
+                <p>
+                    <strong>Source:</strong>
+                    {{ item.resource.source }}
+                </p>
+
+                <a href="{{ item.resource.url }}"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Read Educational Resource
+                </a>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="card">
+            <p>
+                We couldn't find any matching educational resources
+                right now. Please check back later.
+            </p>
+        </div>
+
+    {% endif %}
+
+    <p>
+        <a href="{% url 'appointment_detail' concern.appointment.pk %}">
+            Back to Appointment
+        </a>
+    </p>
+
+    <p class="disclaimer">
+        These resources are provided for educational purposes only.
+        They are not a substitute for professional medical advice,
+        diagnosis, or treatment.
+    </p>
+
+</div>
+
+{% endblock %}
+</title>
+</head>
+<body>
+
+</body>
+</html>

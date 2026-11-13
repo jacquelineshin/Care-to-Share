@@ -16,6 +16,7 @@ urlpatterns = [
     path("instructions/<int:pk>/toggle/", views.toggle_instruction, name="toggle_instruction"),
     path("appointments/<int:pk>/summary/", views.pre_visit_summary, name="pre_visit_summary"),
     path("concerns/<int:pk>/edit/", views.edit_health_concern, name="edit_health_concern"),
+    path("concerns/<int:pk>/resources/", views.recommended_resources, name="recommended_resources"),
     path("concerns/<int:pk>/delete/", views.delete_health_concern, name="delete_health_concern"),
     path("instructions/<int:pk>/edit/", views.edit_visit_instruction, name="edit_visit_instruction"),
     path("instructions/<int:pk>/delete/", views.delete_visit_instruction, name="delete_visit_instruction"),

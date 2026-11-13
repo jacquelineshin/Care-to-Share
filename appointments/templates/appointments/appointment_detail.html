@@ -180,19 +180,26 @@
 
                 <!-- Edit and Delete Buttons -->
 
-                <div class="concern-actions">
 
-                    <a href="{% url 'edit_health_concern' concern.pk %}"
-                       class="btn-secondary">
-                        Edit Concern
-                    </a>
+<div class="concern-actions">
 
-                    <a href="{% url 'delete_health_concern' concern.pk %}"
-                       class="btn-danger">
-                        Delete Concern
-                    </a>
+    <a href="{% url 'recommended_resources' concern.pk %}"
+       class="btn">
+        Find Educational Resources
+    </a>
 
-                </div>
+    <a href="{% url 'edit_health_concern' concern.pk %}"
+       class="btn-secondary">
+        Edit Concern
+    </a>
+
+    <a href="{% url 'delete_health_concern' concern.pk %}"
+       class="btn-danger">
+        Delete Concern
+    </a>
+
+</div>
+
 
             </div>
 

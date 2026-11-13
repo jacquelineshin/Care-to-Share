@@ -128,3 +128,50 @@ class VisitInstruction(models.Model):
     def __str__(self):
         return self.instruction[:50]
 
+
+class EducationalResource(models.Model):
+
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    content = models.TextField()
+    topic = models.CharField(max_length=100)
+    source = models.CharField(max_length=200)
+    url = models.URLField()
+
+    embedding = models.JSONField(
+        null=True,
+        blank=True
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        # Check whether searchable article information changed.
+        if self.pk:
+            old_resource = EducationalResource.objects.filter(
+                pk=self.pk
+            ).first()
+
+            if old_resource:
+                changed_fields = [
+                    "title",
+                    "description",
+                    "content",
+                    "topic",
+                ]
+
+                if any(
+                    getattr(old_resource, field) != getattr(self, field)
+                    for field in changed_fields
+                ):
+                    self.embedding = None
+
+                    if kwargs.get("update_fields") is not None:
+                        kwargs["update_fields"] = (
+                            set(kwargs["update_fields"]) | {"embedding"}
+                        )
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title

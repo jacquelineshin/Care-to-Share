@@ -1,4 +1,5 @@
-
+import logging
+logger = logging.getLogger(__name__)
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
@@ -615,5 +616,40 @@ def post_visit_dashboard(request):
             "categories": VisitInstruction.CATEGORY_CHOICES,
             "selected_category": selected_category,
             "selected_status": selected_status,
+        }
+    )
+
+
+@login_required
+def recommended_resources(request, pk):
+    concern = get_object_or_404(
+        HealthConcern,
+        pk=pk,
+        appointment__user=request.user
+    )
+
+    recommendations = []
+
+    try:
+        from ai_services.resource_recommender import recommend_resources
+
+        recommendations = recommend_resources(concern)
+
+    except Exception:
+        logger.exception(
+            "Failed to generate educational resource recommendations."
+        )
+
+        messages.error(
+            request,
+            "We couldn't load educational resources right now. Please try again later."
+        )
+
+    return render(
+        request,
+        "appointments/recommended_resources.html",
+        {
+            "concern": concern,
+            "recommendations": recommendations,
         }
     )

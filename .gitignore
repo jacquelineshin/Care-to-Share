@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+.venv/
+
+# Django and local databases
+db.sqlite3
+db_backup.sqlite3
+
+# Environment variables and secrets
+.env
+.env.*
+
+# PyCharm
+.idea/
+
+# macOS
+.DS_Store
