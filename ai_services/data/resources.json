@@ -1,0 +1,242 @@
+[
+  {
+    "title": "Understanding Headaches",
+    "topic": "Headache",
+    "description": "An overview of common headache types such as tension headaches and cluster headaches.",
+    "content": "Most headaches are tension headaches that feel like a tight band or pressure around the head. They are often linked to stress, poor sleep, skipped meals, eye strain, or tight neck and shoulder muscles. Rest, hydration, regular meals and over-the-counter pain relievers usually help. Keeping a headache diary of when headaches start, how long they last and what triggers them helps your provider find patterns. Seek care for a sudden, severe headache or one with fever, stiff neck, confusion or vision changes.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/headache.html"
+  },
+  {
+    "title": "Migraine Basics",
+    "topic": "Migraine",
+    "description": "What migraines are, common triggers, and how they are treated.",
+    "content": "A migraine is a throbbing or pulsing headache, often on one side of the head, that can last hours to days. Many people have nausea, vomiting, and sensitivity to light and sound. Some people notice an aura, such as flashing lights or blind spots, before the pain starts. Common triggers include hormonal changes, certain foods, alcohol, stress, bright lights and changes in sleep. Treatment includes medicines that stop an attack and preventive medicines for frequent migraines.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/migraine.html"
+  },
+  {
+    "title": "Back Pain",
+    "topic": "Back Pain",
+    "description": "Causes of lower and upper back pain and ways to manage it.",
+    "content": "Back pain, especially lower back pain, is one of the most common reasons people see a doctor. It can come from muscle or ligament strain from lifting, poor posture, sitting for long periods, or a herniated disc. The pain may be dull and aching or sharp, and may spread down the leg. Staying gently active, applying heat or ice, and stretching usually help acute back pain improve within a few weeks. Get care if back pain comes with numbness, weakness, or loss of bladder or bowel control.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/backpain.html"
+  },
+  {
+    "title": "Insomnia and Trouble Sleeping",
+    "topic": "Insomnia",
+    "description": "Why people have trouble falling or staying asleep and how to improve sleep.",
+    "content": "Insomnia means having trouble falling asleep, staying asleep, or waking up too early and not feeling rested. It can be caused by stress, anxiety, irregular schedules, caffeine, screen use at night, pain or other medical conditions. Good sleep habits include keeping a regular bedtime, limiting caffeine and alcohol, and keeping the bedroom dark and quiet. Cognitive behavioral therapy for insomnia is an effective long-term treatment. Talk to a provider if poor sleep affects your daytime functioning.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/insomnia.html"
+  },
+  {
+    "title": "Anxiety",
+    "topic": "Anxiety",
+    "description": "Symptoms of anxiety disorders and available treatments.",
+    "content": "Anxiety is a feeling of fear, worry or unease. Anxiety disorders involve worry that is hard to control and interferes with daily life. Physical symptoms can include a racing heart, sweating, trembling, restlessness, muscle tension, stomach upset and trouble sleeping. Panic attacks are sudden episodes of intense fear. Treatment may include talk therapy, medicines, relaxation techniques, exercise and support groups.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/anxiety.html"
+  },
+  {
+    "title": "Depression",
+    "topic": "Depression",
+    "description": "Signs of depression and how it is treated.",
+    "content": "Depression is a mood disorder that causes persistent sadness, hopelessness, or loss of interest in activities you used to enjoy. Other signs include changes in appetite or weight, sleeping too much or too little, low energy, difficulty concentrating and feelings of worthlessness. Depression is common and treatable with therapy, medicines, or both. If you have thoughts of harming yourself, call or text 988 or seek emergency help right away.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/depression.html"
+  },
+  {
+    "title": "Asthma",
+    "topic": "Asthma",
+    "description": "How asthma affects the airways and how it is managed.",
+    "content": "Asthma is a chronic disease that inflames and narrows the airways in the lungs. Symptoms include wheezing, coughing especially at night, chest tightness and shortness of breath. Triggers include allergens, smoke, cold air, exercise and respiratory infections. Asthma is managed with an action plan, quick-relief inhalers and long-term control medicines. Seek emergency care if your rescue inhaler does not help or you struggle to breathe.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/asthma.html"
+  },
+  {
+    "title": "Diabetes",
+    "topic": "Diabetes",
+    "description": "An introduction to type 1 and type 2 diabetes and blood sugar.",
+    "content": "Diabetes is a disease in which blood glucose, or blood sugar, is too high. Symptoms can include increased thirst, frequent urination, hunger, fatigue, blurred vision, slow-healing sores and unexplained weight loss. Type 2 diabetes is the most common type and is linked to weight, inactivity and family history. Healthy eating, physical activity, monitoring blood sugar and medicines such as insulin help manage diabetes.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/diabetes.html"
+  },
+  {
+    "title": "High Blood Pressure",
+    "topic": "High Blood Pressure",
+    "description": "What high blood pressure (hypertension) is and why it matters.",
+    "content": "High blood pressure, or hypertension, happens when the force of blood against artery walls is consistently too high. It usually has no symptoms, so regular blood pressure checks are important. Over time it raises the risk of heart disease, stroke and kidney problems. Lifestyle changes such as reducing salt, exercising, limiting alcohol and managing stress help, along with blood pressure medicines when needed.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/highbloodpressure.html"
+  },
+  {
+    "title": "Seasonal Allergies (Hay Fever)",
+    "topic": "Allergies",
+    "description": "Symptoms and treatment of allergic rhinitis caused by pollen, dust and pets.",
+    "content": "Hay fever, or allergic rhinitis, is an allergic reaction to things like pollen, dust mites, mold or pet dander. Symptoms include sneezing, a runny or stuffy nose, itchy or watery eyes and an itchy throat. Symptoms are often seasonal, appearing in spring or fall. Avoiding triggers, antihistamines, nasal steroid sprays and allergy shots can help control symptoms.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/hayfever.html"
+  },
+  {
+    "title": "Heartburn and GERD",
+    "topic": "Acid Reflux",
+    "description": "Acid reflux, heartburn and gastroesophageal reflux disease.",
+    "content": "Gastroesophageal reflux disease (GERD) happens when stomach acid flows back into the esophagus. The most common symptom is heartburn, a burning feeling in the chest or throat, often after eating or when lying down. Other symptoms include a sour taste, regurgitation, and trouble swallowing. Eating smaller meals, avoiding trigger foods like spicy or fatty foods, not lying down after eating, and antacid medicines can help.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/gerd.html"
+  },
+  {
+    "title": "Fatigue",
+    "topic": "Fatigue",
+    "description": "Possible causes of feeling tired or low energy all the time.",
+    "content": "Fatigue is a feeling of constant tiredness or weakness that does not go away with rest. It can be caused by poor sleep, stress, depression, anemia, thyroid problems, infections, medicines or chronic illnesses. Tracking your sleep, diet, activity and when you feel most exhausted helps your provider look for causes. See a provider if you are exhausted for more than two weeks without a clear reason.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/fatigue.html"
+  },
+  {
+    "title": "Dizziness and Vertigo",
+    "topic": "Dizziness",
+    "description": "Feeling lightheaded, unsteady, or like the room is spinning.",
+    "content": "Dizziness describes feeling lightheaded, faint, woozy or unsteady. Vertigo is a type of dizziness where you feel that you or the room is spinning. Causes include inner ear problems, standing up too quickly, dehydration, low blood sugar, medicines and low blood pressure. Sitting or lying down right away and drinking fluids may help. Seek emergency care if dizziness comes with fainting, chest pain, slurred speech or weakness on one side of the body.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/dizzinessandvertigo.html"
+  },
+  {
+    "title": "Knee Injuries and Disorders",
+    "topic": "Knee Pain",
+    "description": "Common causes of knee pain, swelling and stiffness.",
+    "content": "The knee is the most easily injured joint. Knee pain can result from sprains, torn ligaments or meniscus, tendinitis, overuse from running or sports, and arthritis. Symptoms include pain, swelling, stiffness, popping, and difficulty bending or bearing weight. Rest, ice, compression and elevation help minor injuries. Physical therapy, braces or surgery may be needed for more serious problems.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/kneeinjuriesanddisorders.html"
+  },
+  {
+    "title": "Eczema (Atopic Dermatitis)",
+    "topic": "Eczema",
+    "description": "Dry, itchy, inflamed skin and how to care for it.",
+    "content": "Eczema is a condition that makes skin red, dry, itchy and inflamed. Patches often appear on the hands, inner elbows, backs of the knees and face. Flares can be triggered by soaps, fragrances, stress, sweat, weather changes and allergens. Using fragrance-free moisturizers, short lukewarm showers and prescribed creams can help. Scratching can lead to skin infections.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/eczema.html"
+  },
+  {
+    "title": "Common Cold",
+    "topic": "Common Cold",
+    "description": "Symptoms of a cold and how to feel better.",
+    "content": "The common cold is a viral infection of the nose and throat. Symptoms include a runny or stuffy nose, sneezing, sore throat, cough, mild headache and low energy. Colds usually get better in 7 to 10 days. Rest, fluids, and over-the-counter remedies can ease symptoms; antibiotics do not treat colds. See a provider if symptoms last more than 10 days or you have a high fever.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/commoncold.html"
+  },
+  {
+    "title": "Influenza (Flu)",
+    "topic": "Flu",
+    "description": "How the flu differs from a cold and how to prevent it.",
+    "content": "Influenza is a contagious respiratory illness caused by flu viruses. Flu symptoms usually start suddenly and include fever, chills, body aches, cough, sore throat, headache and extreme tiredness. Most people recover in a week or two, but flu can lead to serious complications in older adults, young children and people with chronic conditions. A yearly flu vaccine is the best prevention, and antiviral medicines can help if started early.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/flu.html"
+  },
+  {
+    "title": "Nausea and Vomiting",
+    "topic": "Nausea",
+    "description": "Causes of feeling sick to your stomach and throwing up.",
+    "content": "Nausea is an uneasy feeling in the stomach, often with an urge to vomit. Causes include stomach viruses, food poisoning, motion sickness, pregnancy, migraines, medicines and anxiety. Sipping clear fluids, eating bland foods and resting can help. Watch for signs of dehydration such as dark urine and dizziness. Get care if vomiting lasts more than a day or two, or if there is blood in the vomit.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/nauseaandvomiting.html"
+  },
+  {
+    "title": "Abdominal Pain",
+    "topic": "Stomach Pain",
+    "description": "Understanding pain in the belly or stomach area.",
+    "content": "Abdominal pain is pain anywhere between the chest and the groin, often called a stomach ache. It may be cramping, dull, sharp or burning. Common causes include gas, indigestion, constipation, stomach viruses, food intolerances and menstrual cramps. More serious causes include appendicitis, gallstones and ulcers. Noting where the pain is, when it happens and what makes it better or worse helps your provider. Get urgent care for severe pain, pain with fever, or a hard, tender belly.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/abdominalpain.html"
+  },
+  {
+    "title": "Chest Pain",
+    "topic": "Chest Pain",
+    "description": "Possible causes of chest pain and when it is an emergency.",
+    "content": "Chest pain can have many causes, from heart problems to lung conditions, heartburn, muscle strain or anxiety. Pain from a heart attack often feels like pressure, squeezing or tightness and may spread to the arm, neck, jaw or back, with shortness of breath, sweating or nausea. Call 911 right away if you think you may be having a heart attack. Other chest pain should still be evaluated by a healthcare provider.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/chestpain.html"
+  },
+  {
+    "title": "Cough",
+    "topic": "Cough",
+    "description": "Why people cough and when a cough needs attention.",
+    "content": "Coughing is a reflex that helps clear the airways of mucus and irritants. Short-term coughs are usually caused by colds, flu or other infections. A cough that lasts more than three to eight weeks may be caused by allergies, asthma, acid reflux, smoking or medicines. Honey, fluids and humidifiers can soothe a cough. See a provider if you cough up blood, have trouble breathing, or your cough does not go away.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/cough.html"
+  },
+  {
+    "title": "Constipation",
+    "topic": "Constipation",
+    "description": "Infrequent or difficult bowel movements and how to relieve them.",
+    "content": "Constipation means having fewer than three bowel movements a week, or stools that are hard, dry and difficult to pass. It can be caused by a low-fiber diet, not drinking enough water, inactivity, certain medicines and changes in routine. Eating more fiber, drinking water and exercising often help. See a provider if constipation is new, severe, or comes with blood in the stool or weight loss.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/constipation.html"
+  },
+  {
+    "title": "Diarrhea",
+    "topic": "Diarrhea",
+    "description": "Loose, watery stools and avoiding dehydration.",
+    "content": "Diarrhea means loose, watery stools three or more times a day. Short-term diarrhea is usually caused by viruses, bacteria, food poisoning or medicines. Long-lasting diarrhea may be linked to irritable bowel syndrome, food intolerances like lactose intolerance, or inflammatory bowel disease. The main risk is dehydration, so drink plenty of fluids with electrolytes. Get care if it lasts more than two days or comes with high fever or bloody stools.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/diarrhea.html"
+  },
+  {
+    "title": "Managing Stress",
+    "topic": "Stress",
+    "description": "How stress affects your body and healthy ways to cope.",
+    "content": "Stress is the body's reaction to a challenge or demand, such as work, school, money or relationships. Long-term stress can cause headaches, muscle tension, upset stomach, trouble sleeping, irritability and feeling overwhelmed. Healthy coping strategies include exercise, relaxation and breathing techniques, getting enough sleep, and talking to friends or a counselor.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/stress.html"
+  },
+  {
+    "title": "Neck Pain and Injuries",
+    "topic": "Neck Pain",
+    "description": "Stiff necks, strains and other causes of neck pain.",
+    "content": "Neck pain is often caused by muscle strain from poor posture, looking down at phones or computers, sleeping in an awkward position, or whiplash injuries. Arthritis and pinched nerves can also cause neck pain that spreads to the shoulders or arms. Heat, gentle stretches, and improving workstation posture usually help. Get care for neck pain with numbness, weakness, fever or after an injury.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/neckinjuriesanddisorders.html"
+  },
+  {
+    "title": "Urinary Tract Infections",
+    "topic": "Urinary Tract Infection",
+    "description": "Signs of a bladder or urinary tract infection (UTI).",
+    "content": "A urinary tract infection (UTI) is an infection in the bladder, kidneys or urethra, usually caused by bacteria. Symptoms include a burning feeling when urinating, a frequent or urgent need to pee, cloudy or strong-smelling urine and pelvic pain. Fever and back or side pain may mean the infection has reached the kidneys. UTIs are treated with antibiotics prescribed by a provider.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/urinarytractinfections.html"
+  },
+  {
+    "title": "Acne",
+    "topic": "Acne",
+    "description": "Pimples, blackheads and treatment options for acne.",
+    "content": "Acne is a skin condition that causes pimples, blackheads, whiteheads and sometimes painful cysts, usually on the face, chest and back. It happens when hair follicles become clogged with oil and dead skin cells. Hormones, stress and some medicines can make acne worse. Gentle cleansing, not picking at pimples, and over-the-counter or prescription treatments can help clear skin and prevent scarring.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/acne.html"
+  },
+  {
+    "title": "Sore Throat",
+    "topic": "Sore Throat",
+    "description": "Causes of throat pain, scratchiness and trouble swallowing.",
+    "content": "A sore throat causes pain, scratchiness or irritation that often gets worse when you swallow. Most sore throats are caused by viruses like colds and flu. Strep throat is a bacterial infection that needs antibiotics. Warm liquids, salt water gargles, lozenges and rest can help. See a provider if your sore throat is severe, lasts longer than a week, or comes with a high fever or trouble breathing.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/sorethroat.html"
+  },
+  {
+    "title": "Arthritis and Joint Pain",
+    "topic": "Arthritis",
+    "description": "Joint pain, stiffness and swelling from arthritis.",
+    "content": "Arthritis causes pain, swelling and stiffness in one or more joints, such as the hands, knees, hips and spine. Osteoarthritis develops from wear and tear over time, while rheumatoid arthritis is an autoimmune disease. Joint stiffness is often worse in the morning or after rest. Exercise, weight management, physical therapy, and pain-relieving or anti-inflammatory medicines can help.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/arthritis.html"
+  },
+  {
+    "title": "Breathing Problems",
+    "topic": "Shortness of Breath",
+    "description": "Shortness of breath and difficulty breathing.",
+    "content": "Shortness of breath is the feeling that you cannot get enough air. It can be caused by asthma, lung infections like pneumonia, COPD, heart problems, anemia, anxiety or being out of shape. Breathing problems that come on suddenly or are severe can be a medical emergency. Tell your provider when breathlessness happens, such as during activity, lying flat, or at night.",
+    "source": "MedlinePlus (U.S. National Library of Medicine)",
+    "url": "https://medlineplus.gov/breathingproblems.html"
+  }
+]
