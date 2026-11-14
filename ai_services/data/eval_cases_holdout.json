@@ -1,0 +1,14 @@
+[
+  {"id": 101, "category": "lay_language", "symptom": "Can't stop scratching", "description": "Rough scaly rash on the backs of my knees that gets worse after hot showers.", "severity": 4, "relevant": ["Eczema"]},
+  {"id": 102, "category": "lay_language", "symptom": "Stiff fingers", "description": "My finger joints are swollen and stiff for an hour every morning.", "severity": 5, "relevant": ["Arthritis"]},
+  {"id": 103, "category": "direct", "symptom": "Pimples", "description": "Breakouts on my chin and forehead that leave dark marks.", "severity": 3, "relevant": ["Acne"]},
+  {"id": 104, "category": "lay_language", "symptom": "Haven't gone in days", "description": "I haven't had a bowel movement in five days and I feel bloated.", "severity": 5, "relevant": ["Constipation", "Stomach Pain"]},
+  {"id": 105, "category": "lay_language", "symptom": "Stiff neck", "description": "My neck is sore and stiff after working on my laptop all week.", "triggers": "looking down at screens", "severity": 4, "relevant": ["Neck Pain"]},
+  {"id": 106, "category": "short_vague", "symptom": "Stressed", "description": "Overwhelmed.", "severity": 5, "relevant": ["Stress", "Anxiety"]},
+  {"id": 107, "category": "multi_symptom", "symptom": "Blood pressure", "description": "My home blood pressure readings are 150 over 95.", "severity": 4, "relevant": ["High Blood Pressure"]},
+  {"id": 108, "category": "red_flag", "symptom": "Face drooping", "description": "The left side of my face is drooping and my speech is slurred.", "severity": 10, "relevant": [], "expect_urgent": true},
+  {"id": 109, "category": "red_flag", "symptom": "Worst headache", "description": "Sudden, worst headache of my life that came on in seconds.", "severity": 10, "relevant": ["Headache", "Migraine"], "expect_urgent": true},
+  {"id": 110, "category": "out_of_scope", "symptom": "Recipe", "description": "What is a good recipe for chocolate chip cookies?", "severity": 1, "relevant": []},
+  {"id": 111, "category": "no_coverage", "symptom": "Ear pain", "description": "Sharp pain in my left ear and muffled hearing.", "severity": 5, "relevant": []},
+  {"id": 112, "category": "negation", "symptom": "Mild cough", "description": "Small dry cough, no trouble breathing and no fever.", "severity": 2, "relevant": ["Cough", "Common Cold"], "expect_urgent": false}
+]

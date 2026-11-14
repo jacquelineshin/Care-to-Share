@@ -120,6 +120,15 @@
 
             <p>{{ concern.description }}</p>
 
+            {% if concern.safety_alert %}
+                <div class="safety-alert safety-{{ concern.safety_alert.level }}" role="alert">
+                    <strong>
+                        {% if concern.safety_alert.level == "crisis" %}Please reach out for support now{% else %}This may need urgent care{% endif %}
+                    </strong>
+                    <p>{{ concern.safety_alert.message }}</p>
+                </div>
+            {% endif %}
+
             <!-- Additional Symptom Details -->
 
 

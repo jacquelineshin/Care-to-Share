@@ -109,6 +109,15 @@
                     {{ concern.description }}
                 </p>
 
+                {% if concern.safety_alert %}
+                    <p class="summary-flag">
+                        <strong>⚠ Flagged by Care to Share:</strong>
+                        this description includes a possible warning sign
+                        ({{ concern.safety_alert.category|cut:"_" }}).
+                        Please review it first.
+                    </p>
+                {% endif %}
+
                 <!-- Combined Symptom Details -->
 
                 <div class="summary-symptom-info">

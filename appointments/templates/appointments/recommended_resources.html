@@ -1,13 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>
 {% extends "appointments/base.html" %}
 
 {% block content %}
 
 <div class="page-container">
+
+    <a href="{% url 'appointment_detail' concern.appointment.pk %}" class="back-link">
+        ← Back to Appointment
+    </a>
 
     <h1>Recommended Educational Resources</h1>
 
@@ -16,6 +15,19 @@
         These materials can help you learn more and prepare questions
         for your healthcare provider.
     </p>
+
+    {% if result.safety_alert %}
+        <div class="safety-alert safety-{{ result.safety_alert.level }}" role="alert">
+            <strong>
+                {% if result.safety_alert.level == "crisis" %}
+                    Please reach out for support now
+                {% else %}
+                    This may need urgent care
+                {% endif %}
+            </strong>
+            <p>{{ result.safety_alert.message }}</p>
+        </div>
+    {% endif %}
 
     <div class="card">
 
@@ -29,31 +41,50 @@
 
     <h2>Suggested Resources</h2>
 
+    {% if result.status == "fallback" or result.status == "error" or result.status == "insufficient_input" %}
+        <div class="ai-notice ai-notice-{{ result.status }}">
+            {{ result.message }}
+        </div>
+    {% endif %}
+
     {% if recommendations %}
 
         {% for item in recommendations %}
 
-            <div class="card">
+            <div class="card resource-card">
 
-                <h3>{{ item.resource.title }}</h3>
+                <div class="resource-header">
+                    <h3>{{ item.resource.title }}</h3>
+
+                    {% if item.confidence == "strong" %}
+                        <span class="match-badge match-strong">Strong match</span>
+                    {% elif item.confidence == "possible" %}
+                        <span class="match-badge match-possible">Possible match</span>
+                    {% elif item.confidence == "keyword" %}
+                        <span class="match-badge match-keyword">Keyword match</span>
+                    {% endif %}
+                </div>
 
                 <p>{{ item.resource.description }}</p>
 
-                <p>
-        <p>
-            <strong>Similarity Score:</strong>
-                {{ item.score }}
-        </p>
-                    <strong>Topic:</strong>
-                    {{ item.resource.topic }}
-                </p>
+                {% if item.matched_terms %}
+                    <p class="why-matched">
+                        <strong>Why this was suggested:</strong>
+                        mentions
+                        {% for term in item.matched_terms %}“{{ term }}”{% if not forloop.last %}, {% endif %}{% endfor %}
+                    </p>
+                {% endif %}
 
-                <p>
-                    <strong>Source:</strong>
-                    {{ item.resource.source }}
+                <p class="resource-meta">
+                    <strong>Topic:</strong> {{ item.resource.topic }}
+                    &nbsp;·&nbsp;
+                    <strong>Source:</strong> {{ item.resource.source }}
+                    &nbsp;·&nbsp;
+                    <strong>Relevance:</strong> {{ item.score|floatformat:2 }}
                 </p>
 
                 <a href="{{ item.resource.url }}"
+                   class="btn"
                    target="_blank"
                    rel="noopener noreferrer">
                     Read Educational Resource
@@ -63,35 +94,23 @@
 
         {% endfor %}
 
-    {% else %}
+    {% elif result.status != "error" and result.status != "insufficient_input" %}
 
         <div class="card">
             <p>
-                We couldn't find any matching educational resources
-                right now. Please check back later.
+                {{ result.message|default:"We couldn't find any matching educational resources right now. Please check back later." }}
             </p>
         </div>
 
     {% endif %}
 
-    <p>
-        <a href="{% url 'appointment_detail' concern.appointment.pk %}">
-            Back to Appointment
-        </a>
-    </p>
-
     <p class="disclaimer">
-        These resources are provided for educational purposes only.
-        They are not a substitute for professional medical advice,
-        diagnosis, or treatment.
+        Resources are matched automatically by an AI model that compares
+        your description with our library. They are provided for
+        educational purposes only and are not a substitute for
+        professional medical advice, diagnosis, or treatment.
     </p>
 
 </div>
 
 {% endblock %}
-</title>
-</head>
-<body>
-
-</body>
-</html>
