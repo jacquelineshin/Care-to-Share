@@ -2,7 +2,7 @@ import logging
 logger = logging.getLogger(__name__)
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login
 from django.db.models import Q
@@ -15,10 +15,10 @@ from .forms import (
     HealthConcern,
 )
 from django.db.models import Case, When, Value, IntegerField
-from .models import Appointment, HealthConcern, VisitInstruction
+from .models import Appointment, HealthConcern, VisitInstruction, VisitResponse
 def home(request):
     return render(request, "appointments/home.html")
-
+from django.db import transaction
 
 
 @login_required
@@ -651,5 +651,203 @@ def recommended_resources(request, pk):
         {
             "concern": concern,
             "recommendations": recommendations,
+        }
+    )
+
+@login_required
+def visit_companion(request, pk):
+
+    appointment = get_object_or_404(
+        Appointment,
+        pk=pk,
+        user=request.user
+    )
+
+    concerns = list(
+        appointment.concerns.filter(
+            ~Q(question_for_doctor="")
+        ).annotate(
+            priority_order=Case(
+                When(priority="high", then=Value(1)),
+                When(priority="medium", then=Value(2)),
+                When(priority="low", then=Value(3)),
+                default=Value(4),
+                output_field=IntegerField(),
+            )
+        ).select_related(
+            "visit_response"
+        ).order_by("priority_order", "-severity")
+    )
+
+    if request.method == "POST":
+
+        responses = []
+
+        for concern in concerns:
+
+            response_text = request.POST.get(
+                f"response_{concern.pk}", ""
+            ).strip()
+
+            discussed = (
+                request.POST.get(
+                    f"discussed_{concern.pk}"
+                ) == "on"
+            )
+
+            if len(response_text) > 3000:
+                messages.error(
+                    request,
+                    "A response is too long. "
+                    "Please use 3000 characters or fewer."
+                )
+
+                return render(
+                    request,
+                    "appointments/visit_companion.html",
+                    {
+                        "appointment": appointment,
+                        "concerns": concerns,
+                    }
+                )
+
+            responses.append(
+                (concern, response_text, discussed)
+            )
+
+        with transaction.atomic():
+
+            for concern, response_text, discussed in responses:
+
+                VisitResponse.objects.update_or_create(
+                    concern=concern,
+                    defaults={
+                        "doctor_response": response_text,
+                        "discussed": discussed,
+                    }
+                )
+
+        messages.success(
+            request,
+            "Your visit notes were saved successfully!"
+        )
+
+        return redirect(
+            "visit_companion",
+            pk=appointment.pk
+        )
+
+    return render(
+        request,
+        "appointments/visit_companion.html",
+        {
+            "appointment": appointment,
+            "concerns": concerns,
+        }
+    )
+
+@login_required
+def visit_companion(request, pk):
+
+    appointment = get_object_or_404(
+        Appointment,
+        pk=pk,
+        user=request.user
+    )
+
+    concerns = list(
+        appointment.concerns.exclude(
+            question_for_doctor=""
+        ).order_by(
+            "appointment__appointment_date",
+            "-severity"
+        )
+    )
+
+    if request.method == "POST":
+
+        responses = []
+        general_notes = request.POST.get(
+            "general_notes", ""
+        ).strip()
+
+        if len(general_notes) > 5000:
+            messages.error(
+                request,
+                "Please keep general notes under 5000 characters."
+            )
+            return redirect(
+                "visit_companion",
+                pk=appointment.pk
+            )
+        for concern in concerns:
+
+            response_text = request.POST.get(
+                f"response_{concern.pk}", ""
+            ).strip()
+
+            discussed = (
+                request.POST.get(
+                    f"discussed_{concern.pk}"
+                ) == "on"
+            )
+
+            if len(response_text) > 3000:
+                messages.error(
+                    request,
+                    "Please keep each response under 3000 characters."
+                )
+                return redirect(
+                    "visit_companion",
+                    pk=appointment.pk
+                )
+
+            responses.append(
+                (concern, response_text, discussed)
+            )
+
+        with transaction.atomic():
+            for concern, response_text, discussed in responses:
+                appointment.general_notes = general_notes
+                appointment.save(update_fields=["general_notes"])
+                VisitResponse.objects.update_or_create(
+                    concern=concern,
+                    defaults={
+                        "doctor_response": response_text,
+                        "discussed": discussed,
+                    }
+                )
+
+        messages.success(
+            request,
+            "Your visit notes were saved successfully!"
+        )
+
+        return redirect(
+            "visit_companion",
+            pk=appointment.pk
+        )
+    total_questions = len(concerns)
+
+    discussed_questions = sum(
+        1
+        for concern in concerns
+        if hasattr(concern, "visit_response")
+        and concern.visit_response.discussed
+    )
+
+    progress_percentage = (
+        round(discussed_questions / total_questions * 100)
+        if total_questions > 0 else 0
+    )
+    return render(
+        request,
+        "appointments/visit_companion.html",
+        {
+            "appointment": appointment,
+            "concerns": concerns,
+            "total_questions": total_questions,
+            "discussed_questions": discussed_questions,
+            "progress_percentage": progress_percentage,
         }
     )

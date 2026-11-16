@@ -1,0 +1,200 @@
+
+{% extends "appointments/base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <a href="{% url 'appointment_detail' appointment.pk %}"
+       class="back-link">
+        ← Back to Appointment
+    </a>
+
+    <h1>My Visit Companion</h1>
+
+    <p>
+        Keep track of your questions and record
+        important information during your appointment.
+    </p>
+
+</div>
+
+<!-- Appointment Information -->
+
+<div class="card">
+
+    <h2>Appointment Information</h2>
+
+    <p>
+        <strong>Healthcare Provider:</strong>
+        {{ appointment.doctor_name }}
+    </p>
+
+    <p>
+        <strong>Date:</strong>
+        {{ appointment.appointment_date|date:"F j, Y, g:i A" }}
+    </p>
+
+    <p>
+        <strong>Reason for Visit:</strong>
+        {{ appointment.reason_for_visit }}
+    </p>
+
+</div>
+
+<!-- Question Progress -->
+
+<div class="card companion-progress">
+
+    <div class="companion-progress-header">
+        <h2>Your Question Progress</h2>
+
+        <span class="companion-progress-percent">
+            {{ progress_percentage }}% Complete
+        </span>
+    </div>
+
+    <p>
+        <strong>{{ discussed_questions }} of {{ total_questions }}</strong>
+        questions discussed
+    </p>
+
+    <div class="progress-bar-background">
+        <div class="progress-bar-fill"
+             style="width: {{ progress_percentage }}%;">
+        </div>
+    </div>
+
+</div>
+
+<!-- Questions and Responses -->
+
+<form method="post" class="companion-form">
+
+    {% csrf_token %}
+
+    <div class="section-header">
+        <div>
+            <h2>Questions for My Doctor</h2>
+
+            <p>
+                Record answers and check off questions
+                as you discuss them.
+            </p>
+        </div>
+    </div>
+
+    {% for concern in concerns %}
+
+        <div class="card companion-card">
+
+            <div class="companion-question-header">
+
+                <h3>Question {{ forloop.counter }}</h3>
+
+                <span class="priority-badge priority-{{ concern.priority }}">
+                    {{ concern.get_priority_display }} Priority
+                </span>
+
+            </div>
+
+            <p class="companion-symptom">
+                Related concern: {{ concern.symptom }}
+            </p>
+
+            <p class="companion-question">
+                {{ concern.question_for_doctor }}
+            </p>
+
+            <label for="response_{{ concern.pk }}">
+                Doctor's Response / My Notes
+            </label>
+
+            <textarea
+                name="response_{{ concern.pk }}"
+                id="response_{{ concern.pk }}"
+                rows="4"
+                maxlength="3000"
+                placeholder="Write down the doctor's explanation or important details..."
+            >{{ concern.visit_response.doctor_response }}</textarea>
+
+            <div class="companion-checkbox">
+
+                <input
+                    type="checkbox"
+                    name="discussed_{{ concern.pk }}"
+                    id="discussed_{{ concern.pk }}"
+                    {% if concern.visit_response.discussed %}checked{% endif %}
+                >
+
+                <label for="discussed_{{ concern.pk }}">
+                    I discussed this question
+                </label>
+
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <div class="card empty-state">
+
+            <h3>No Questions Recorded Yet</h3>
+
+            <p>
+                Add questions through your pre-visit
+                questionnaire to see them here.
+            </p>
+
+            <a href="{% url 'add_health_concern' appointment.pk %}"
+               class="btn-secondary">
+                Add Health Concern
+            </a>
+
+        </div>
+
+    {% endfor %}
+
+<!-- General Appointment Notes -->
+
+<div class="card general-notes-card">
+
+    <h2>General Appointment Notes</h2>
+
+    <p>
+        Record any additional information discussed
+        during your appointment.
+    </p>
+
+    <label for="general_notes">
+        My Appointment Notes
+    </label>
+
+    <textarea
+        name="general_notes"
+        id="general_notes"
+        rows="6"
+        maxlength="5000"
+        placeholder="Write additional notes from your appointment..."
+    >{{ appointment.general_notes }}</textarea>
+
+</div>
+
+
+        <button type="submit" class="btn">
+            Save Visit Notes
+        </button>
+
+
+</form>
+
+<div class="companion-footer">
+
+    <a href="{% url 'appointment_detail' appointment.pk %}"
+       class="back-link">
+        Back to Appointment
+    </a>
+
+</div>
+
+{% endblock %}
