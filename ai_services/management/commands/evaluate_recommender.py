@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 from django.core.management.base import BaseCommand
 
@@ -9,16 +10,16 @@ class Command(BaseCommand):
     help = (
         "Run the labelled evaluation set against the recommender and "
         "report Hit@1, Hit@3, MRR, precision, false-positive rate, "
-        "urgent-warning recall, quality (1-10) and latency."
+        "error rate, quality (1-10) and latency."
     )
 
     def add_arguments(self, parser):
         parser.add_argument(
             "--strategy",
-            choices=["baseline", "hybrid"],
-            default="hybrid",
-            help="baseline = original semantic-only ranking; "
-                 "hybrid = improved ranking (default).",
+            choices=["baseline", "improved"],
+            default="improved",
+            help="baseline = original query text + fixed 0.45 threshold; "
+                 "improved = cleaned query + confidence tiers (default).",
         )
         parser.add_argument(
             "--cases",
@@ -45,7 +46,7 @@ class Command(BaseCommand):
 
         for row in results["rows"]:
             topics = ", ".join(item["topic"] for item in row["returned"]) or "(none)"
-            flag = " [URGENT]" if row["urgent_shown"] else ""
+            flag = " [ERROR]" if row["error"] else ""
             self.stdout.write(
                 f"{row['id']:>2}  {row['category']:<13} "
                 f"{row['symptom'][:24]:<24} {(topics + flag)[:48]:<48} "
@@ -57,7 +58,7 @@ class Command(BaseCommand):
             self.stdout.write(f"{key:<22} {value}")
 
         if options["save"]:
-            suffix = "" if options["cases"] == str(CASES_FILE) else "_holdout"
+            suffix = "" if Path(options["cases"]).resolve() == CASES_FILE.resolve() else "_holdout"
             path = DATA_DIR / f"eval_results_{strategy}{suffix}.json"
             path.write_text(json.dumps(results, indent=2), encoding="utf-8")
             self.stdout.write(self.style.SUCCESS(f"Saved {path.name}"))
