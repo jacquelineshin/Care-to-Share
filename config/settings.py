@@ -167,16 +167,22 @@ LOGOUT_REDIRECT_URL = "home"
 # Production security (only when DEBUG is off)
 # ---------------------------------------------------------------------------
 
+# DJANGO_HTTPS=False is only for the local production-mode deployment
+# (plain http://localhost); every internet-facing deploy keeps it True.
+HTTPS_ENABLED = env_bool("DJANGO_HTTPS", True)
+
 if not DEBUG:
-    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-    SECURE_SSL_REDIRECT = env_bool("DJANGO_SECURE_SSL_REDIRECT", True)
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_HSTS_SECONDS = 60 * 60 * 24 * 30
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_REFERRER_POLICY = "same-origin"
     X_FRAME_OPTIONS = "DENY"
+
+    if HTTPS_ENABLED:
+        SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+        SECURE_SSL_REDIRECT = True
+        SESSION_COOKIE_SECURE = True
+        CSRF_COOKIE_SECURE = True
+        SECURE_HSTS_SECONDS = 60 * 60 * 24 * 30
+        SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_AGE = 60 * 60 * 8  # health data: sign users out after 8 hours
