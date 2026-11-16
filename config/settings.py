@@ -201,6 +201,11 @@ CACHES = {
 # Requests per minute per user for the AI recommendation endpoint.
 AI_RATE_LIMIT_PER_MINUTE = int(os.environ.get("AI_RATE_LIMIT_PER_MINUTE", "20"))
 
+# Login brute-force protection: failed attempts per username or IP
+# allowed within the lockout window before logins are refused (HTTP 429).
+LOGIN_MAX_FAILURES = int(os.environ.get("LOGIN_MAX_FAILURES", "5"))
+LOGIN_LOCKOUT_SECONDS = int(os.environ.get("LOGIN_LOCKOUT_SECONDS", "300"))
+
 # ---------------------------------------------------------------------------
 # Logging: structured-ish lines to stdout (collected by the host).
 # Never log patient-entered text; log ids, status and latency only.
