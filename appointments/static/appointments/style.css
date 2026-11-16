@@ -1103,3 +1103,203 @@ input[type="submit"].btn:hover {
         align-items: stretch;
     }
 }
+
+/* Visit Companion */
+
+.companion-form {
+    margin-top: 25px;
+}
+
+.companion-card {
+    border-left: 4px solid #2c7771;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.companion-question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.companion-question-header h3 {
+    margin: 0;
+}
+
+.companion-symptom {
+    color: #6c7b86;
+    font-size: 14px;
+    margin-top: 15px;
+}
+
+.companion-question {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 18px 0;
+}
+
+.companion-card textarea {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #cdd8de;
+    border-radius: 8px;
+    margin-top: 8px;
+    resize: vertical;
+}
+
+.companion-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.companion-checkbox input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    flex-shrink: 0;
+    accent-color: #2c7771;
+}
+
+.companion-checkbox label {
+    margin: 0;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.companion-footer {
+    margin-top: 25px;
+}
+
+@media (max-width: 650px) {
+    .companion-card {
+        padding: 18px;
+    }
+}
+
+/* Visit Companion */
+
+.companion-form {
+    margin-top: 25px;
+}
+
+.companion-card {
+    border-left: 4px solid #2c7771;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.companion-question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.companion-question-header h3 {
+    margin: 0;
+}
+
+.companion-symptom {
+    color: #6c7b86;
+    font-size: 14px;
+    margin-top: 15px;
+}
+
+.companion-question {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 18px 0;
+}
+
+.companion-card textarea {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #cdd8de;
+    border-radius: 8px;
+    margin-top: 8px;
+    resize: vertical;
+}
+
+.companion-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.companion-checkbox input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    flex-shrink: 0;
+    accent-color: #2c7771;
+}
+
+.companion-checkbox label {
+    margin: 0;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.companion-footer {
+    margin-top: 25px;
+}
+
+@media (max-width: 650px) {
+    .companion-card {
+        padding: 18px;
+    }
+}
+/* Visit Companion Question Progress */
+
+.companion-progress {
+    margin-bottom: 30px;
+}
+
+.companion-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.companion-progress-header h2 {
+    margin: 0;
+}
+
+.companion-progress-percent {
+    background-color: #e8f4f1;
+    color: #2c7771;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.companion-progress p {
+    margin-top: 18px;
+    color: #526674;
+}
+/* General Appointment Notes */
+
+.general-notes-card {
+    margin-top: 30px;
+    border-left: 4px solid #2c7771;
+}
+
+.general-notes-card p {
+    color: #6c7b86;
+}
+
+.general-notes-card textarea {
+    width: 100%;
+    min-height: 160px;
+    resize: vertical;
+    margin-top: 8px;
+}
