@@ -1,4 +1,5 @@
 import logging
+import time
 logger = logging.getLogger(__name__)
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -16,6 +17,7 @@ from .forms import (
 )
 from django.db.models import Case, When, Value, IntegerField
 from .models import Appointment, HealthConcern, VisitInstruction, VisitResponse
+from ai_services.ratelimit import ai_rate_limit
 def home(request):
     return render(request, "appointments/home.html")
 from django.db import transaction
@@ -621,6 +623,7 @@ def post_visit_dashboard(request):
 
 
 @login_required
+@ai_rate_limit
 def recommended_resources(request, pk):
     concern = get_object_or_404(
         HealthConcern,
@@ -629,11 +632,20 @@ def recommended_resources(request, pk):
     )
 
     recommendations = []
+    started = time.perf_counter()
 
     try:
         from ai_services.resource_recommender import recommend_resources
 
         recommendations = recommend_resources(concern)
+
+        # Monitoring: ids, counts and latency only - never symptom text.
+        logger.info(
+            "ai.recommend concern=%s results=%s latency_ms=%.1f",
+            concern.pk,
+            len(recommendations),
+            (time.perf_counter() - started) * 1000,
+        )
 
     except Exception:
         logger.exception(

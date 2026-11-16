@@ -50,9 +50,12 @@ class Command(BaseCommand):
         ))
 
         if options["embed"]:
-            from ai_services.resource_recommender import refresh_embeddings
+            from ai_services.resource_recommender import get_resource_embedding
 
-            count = refresh_embeddings()
+            count = sum(
+                get_resource_embedding(resource) is not None
+                for resource in EducationalResource.objects.all()
+            )
             self.stdout.write(self.style.SUCCESS(
                 f"Embeddings computed for {count} resources."
             ))
