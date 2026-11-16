@@ -1,0 +1,278 @@
+{
+  "summary": {
+    "cases": 12,
+    "hit_at_1": 0.889,
+    "hit_at_3": 0.889,
+    "mrr": 0.889,
+    "precision": 0.778,
+    "empty_rate_in_scope": 0.111,
+    "false_positive_rate": 0.333,
+    "error_rate": 0,
+    "mean_quality": 8.75,
+    "latency_p50_ms": 9.1,
+    "latency_p95_ms": 20.9,
+    "strategy": "baseline",
+    "model_load_ms": 301.2
+  },
+  "rows": [
+    {
+      "id": 101,
+      "category": "lay_language",
+      "symptom": "Can't stop scratching",
+      "description": "Rough scaly rash on the backs of my knees that gets worse after hot showers.",
+      "relevant": [
+        "Eczema"
+      ],
+      "returned": [
+        {
+          "topic": "Eczema",
+          "score": 0.492
+        }
+      ],
+      "error": false,
+      "latency_ms": 20.9,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 102,
+      "category": "lay_language",
+      "symptom": "Stiff fingers",
+      "description": "My finger joints are swollen and stiff for an hour every morning.",
+      "relevant": [
+        "Arthritis"
+      ],
+      "returned": [
+        {
+          "topic": "Arthritis",
+          "score": 0.568
+        },
+        {
+          "topic": "Knee Pain",
+          "score": 0.521
+        }
+      ],
+      "error": false,
+      "latency_ms": 10.9,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 0.5,
+      "empty": false,
+      "quality": 8
+    },
+    {
+      "id": 103,
+      "category": "direct",
+      "symptom": "Pimples",
+      "description": "Breakouts on my chin and forehead that leave dark marks.",
+      "relevant": [
+        "Acne"
+      ],
+      "returned": [
+        {
+          "topic": "Acne",
+          "score": 0.501
+        }
+      ],
+      "error": false,
+      "latency_ms": 9.3,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 104,
+      "category": "lay_language",
+      "symptom": "Haven't gone in days",
+      "description": "I haven't had a bowel movement in five days and I feel bloated.",
+      "relevant": [
+        "Constipation",
+        "Stomach Pain"
+      ],
+      "returned": [
+        {
+          "topic": "Constipation",
+          "score": 0.536
+        },
+        {
+          "topic": "Diarrhea",
+          "score": 0.481
+        }
+      ],
+      "error": false,
+      "latency_ms": 11.0,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 0.5,
+      "empty": false,
+      "quality": 8
+    },
+    {
+      "id": 105,
+      "category": "lay_language",
+      "symptom": "Stiff neck",
+      "description": "My neck is sore and stiff after working on my laptop all week.",
+      "relevant": [
+        "Neck Pain"
+      ],
+      "returned": [
+        {
+          "topic": "Neck Pain",
+          "score": 0.612
+        }
+      ],
+      "error": false,
+      "latency_ms": 9.1,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 106,
+      "category": "short_vague",
+      "symptom": "Stressed",
+      "description": "Overwhelmed.",
+      "relevant": [
+        "Stress",
+        "Anxiety"
+      ],
+      "returned": [],
+      "error": false,
+      "latency_ms": 8.3,
+      "hit_at_1": false,
+      "hit_at_3": false,
+      "reciprocal_rank": 0.0,
+      "precision": 0.0,
+      "empty": true,
+      "quality": 1
+    },
+    {
+      "id": 107,
+      "category": "multi_symptom",
+      "symptom": "Blood pressure",
+      "description": "My home blood pressure readings are 150 over 95.",
+      "relevant": [
+        "High Blood Pressure"
+      ],
+      "returned": [
+        {
+          "topic": "High Blood Pressure",
+          "score": 0.543
+        }
+      ],
+      "error": false,
+      "latency_ms": 9.0,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 108,
+      "category": "red_flag",
+      "symptom": "Face drooping",
+      "description": "The left side of my face is drooping and my speech is slurred.",
+      "relevant": [],
+      "returned": [
+        {
+          "topic": "Shortness of Breath",
+          "score": 0.474
+        }
+      ],
+      "error": false,
+      "latency_ms": 8.9,
+      "false_positive": true,
+      "quality": 8
+    },
+    {
+      "id": 109,
+      "category": "red_flag",
+      "symptom": "Worst headache",
+      "description": "Sudden, worst headache of my life that came on in seconds.",
+      "relevant": [
+        "Headache",
+        "Migraine"
+      ],
+      "returned": [
+        {
+          "topic": "Headache",
+          "score": 0.52
+        },
+        {
+          "topic": "Migraine",
+          "score": 0.456
+        }
+      ],
+      "error": false,
+      "latency_ms": 8.8,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 110,
+      "category": "out_of_scope",
+      "symptom": "Recipe",
+      "description": "What is a good recipe for chocolate chip cookies?",
+      "relevant": [],
+      "returned": [],
+      "error": false,
+      "latency_ms": 9.1,
+      "false_positive": false,
+      "quality": 10
+    },
+    {
+      "id": 111,
+      "category": "no_coverage",
+      "symptom": "Ear pain",
+      "description": "Sharp pain in my left ear and muffled hearing.",
+      "relevant": [],
+      "returned": [],
+      "error": false,
+      "latency_ms": 8.6,
+      "false_positive": false,
+      "quality": 10
+    },
+    {
+      "id": 112,
+      "category": "negation",
+      "symptom": "Mild cough",
+      "description": "Small dry cough, no trouble breathing and no fever.",
+      "relevant": [
+        "Cough",
+        "Common Cold"
+      ],
+      "returned": [
+        {
+          "topic": "Cough",
+          "score": 0.461
+        }
+      ],
+      "error": false,
+      "latency_ms": 8.8,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    }
+  ]
+}

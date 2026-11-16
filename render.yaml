@@ -1,0 +1,28 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: care-to-share
+    runtime: python
+    plan: standard          # 2 GB RAM; the 512 MB Starter plan is too small for PyTorch + model
+    buildCommand: ./build.sh
+    startCommand: gunicorn config.wsgi:application -c gunicorn.conf.py
+    healthCheckPath: /healthz/
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: care-to-share-db
+          property: connectionString
+      - key: HF_HOME          # keep the downloaded model inside the deployed build
+        value: /opt/render/project/src/.hf_cache
+      - key: AI_RATE_LIMIT_PER_MINUTE
+        value: "20"
+
+databases:
+  - name: care-to-share-db
+    plan: basic-256mb

@@ -1,0 +1,14 @@
+{% extends "appointments/base.html" %}
+
+{% block content %}
+<div class="page-container">
+    <div class="card">
+        <h1>Please slow down</h1>
+        <p>
+            You've requested resource recommendations many times in the last
+            minute. Please wait a minute and try again.
+        </p>
+        <p><a href="{% url 'dashboard' %}">Back to Dashboard</a></p>
+    </div>
+</div>
+{% endblock %}
