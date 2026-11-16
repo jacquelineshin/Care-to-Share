@@ -13,7 +13,10 @@ class Appointment(models.Model):
     appointment_date = models.DateTimeField()
     reason_for_visit = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-
+    general_notes = models.TextField(
+        blank=True,
+        default=""
+    )
     def __str__(self):
         return f"{self.doctor_name} - {self.appointment_date.date()}"
 
@@ -175,3 +178,48 @@ class EducationalResource(models.Model):
 
     def __str__(self):
         return self.title
+
+class VisitResponse(models.Model):
+    concern = models.OneToOneField(
+        HealthConcern,
+        on_delete=models.CASCADE,
+        related_name="visit_response"
+    )
+
+    doctor_response = models.TextField(
+        blank=True,
+        max_length=3000
+    )
+
+    discussed = models.BooleanField(
+        default=False
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    def __str__(self):
+        return f"Visit response: {self.concern.symptom}"
+class VisitResponse(models.Model):
+    concern = models.OneToOneField(
+        HealthConcern,
+        on_delete=models.CASCADE,
+        related_name="visit_response"
+    )
+
+    doctor_response = models.TextField(
+        blank=True,
+        max_length=3000
+    )
+
+    discussed = models.BooleanField(
+        default=False
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    def __str__(self):
+        return f"Visit response: {self.concern.symptom}"

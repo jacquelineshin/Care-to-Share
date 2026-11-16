@@ -89,8 +89,11 @@
             class="btn-secondary">
                 View Pre-Visit Summary
         </a>
+        <a href="{% url 'visit_companion' appointment.pk %}"
+           class="btn-secondary">
+            Open Visit Companion
+        </a>
     </div>
-
 
     {% for concern in concerns %}
 
