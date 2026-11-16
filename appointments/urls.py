@@ -24,4 +24,6 @@ urlpatterns = [
     path("post-visit-plan/", views.post_visit_dashboard, name="post_visit_dashboard"),
     path("appointments/<int:pk>/companion/", views.visit_companion, name="visit_companion"),
     path("appointments/<int:pk>/companion/", views.visit_companion, name="visit_companion"),
+    path("appointments/<int:pk>/ai-summary/", views.ai_summary_review, name="ai_summary_review"
+),
 ]

@@ -9,18 +9,32 @@
 
     <div class="summary-actions">
 
-        <a href="{% url 'appointment_detail' appointment.pk %}"
-           class="back-link">
-            ← Back to Appointment
-        </a>
+
+<!-- Preparation Sheet Toolbar -->
+
+<div class="pre-visit-toolbar">
+
+    <a href="{% url 'appointment_detail' appointment.pk %}"
+       class="back-link">
+        ← Back to Appointment
+    </a>
+
+    <div class="pre-visit-toolbar-actions">
 
         <button type="button"
                 onclick="window.print()"
-                class="btn">
+                class="btn-print">
             Print / Save as PDF
         </button>
 
+        <a href="{% url 'ai_summary_review' appointment.pk %}"
+           class="btn-ai">
+            ✨ Generate AI Summary
+        </a>
+
     </div>
+
+</div>
 
 
     <!-- Preparation Sheet -->
@@ -73,6 +87,31 @@
 
         <hr>
 
+
+{% if appointment.ai_summary %}
+
+<section class="approved-summary-section">
+
+    <div class="approved-summary-heading">
+        <h2>My Approved Summary</h2>
+
+        <span class="approved-summary-badge">
+            Patient Reviewed
+        </span>
+    </div>
+
+    <p class="approved-summary-description">
+        This summary was reviewed and saved
+        during appointment preparation.
+    </p>
+
+    <div class="approved-summary-content">
+        {{ appointment.ai_summary|linebreaksbr }}
+    </div>
+
+</section>
+
+{% endif %}
 
         <!-- Priority Concerns -->
 

@@ -14,7 +14,14 @@ from .forms import (
     VisitInstructionForm,
     HealthConcern,
 )
+
+from .ai_services import (
+    generate_previsit_summary,
+    improve_summary_wording,
+)
 from django.db.models import Case, When, Value, IntegerField
+import logging
+logger = logging.getLogger(__name__)
 from .models import Appointment, HealthConcern, VisitInstruction, VisitResponse
 def home(request):
     return render(request, "appointments/home.html")
@@ -635,9 +642,19 @@ def recommended_resources(request, pk):
 
         recommendations = recommend_resources(concern)
 
+
     except Exception:
-        logger.exception(
-            "Failed to generate educational resource recommendations."
+
+        logger.exception("Local AI summary generation failed")
+
+        messages.error(
+
+            request,
+
+            "Unable to generate your summary. "
+
+            "Please check that Ollama is running."
+
         )
 
         messages.error(
@@ -849,5 +866,135 @@ def visit_companion(request, pk):
             "total_questions": total_questions,
             "discussed_questions": discussed_questions,
             "progress_percentage": progress_percentage,
+        }
+    )
+
+from openai import OpenAIError
+
+
+@login_required
+def ai_summary_review(request, pk):
+
+    appointment = get_object_or_404(
+        Appointment,
+        pk=pk,
+        user=request.user
+    )
+
+    concerns = appointment.concerns.all()
+
+    # Start with the patient's previously approved summary
+    summary = appointment.ai_summary
+    ai_suggestion = None
+    if request.method == "POST":
+
+        action = request.POST.get("action")
+
+        if action == "generate":
+
+            if not concerns.exists():
+                messages.error(
+                    request,
+                    "Please add a health concern before generating a summary."
+                )
+
+            else:
+                try:
+                    summary = generate_previsit_summary(concerns)
+
+                    messages.success(
+                        request,
+                        "Your AI summary draft is ready. "
+                        "Please review it before saving."
+                    )
+
+
+                except (OpenAIError, ValueError, AttributeError):
+
+                    logger.exception("AI summary generation failed")
+
+                    messages.error(
+
+                        request,
+
+                        "Unable to generate your summary. "
+
+                        "Please try again."
+
+                    )
+
+        elif action == "improve":
+
+            original_summary = request.POST.get(
+                "ai_summary", ""
+            ).strip()
+
+            if not original_summary:
+                messages.error(
+                    request,
+                    "Please generate a summary first."
+                )
+
+            else:
+                summary = original_summary
+
+                try:
+                    ai_suggestion = improve_summary_wording(
+                        original_summary
+                    )
+
+                    messages.success(
+                        request,
+                        "AI wording suggestion generated. "
+                        "Review it against your original summary."
+                    )
+
+                except Exception:
+                    logger.exception(
+                        "AI wording improvement failed"
+                    )
+
+                    messages.error(
+                        request,
+                        "Unable to improve the wording. "
+                        "Please check that Ollama is running."
+                    )
+
+        elif action == "save":
+
+            summary = request.POST.get(
+                "ai_summary", ""
+            ).strip()
+
+            if len(summary) > 10000:
+                messages.error(
+                    request,
+                    "Please keep your summary under 10000 characters."
+                )
+
+            else:
+                appointment.ai_summary = summary
+
+                appointment.save(
+                    update_fields=["ai_summary"]
+                )
+
+                messages.success(
+                    request,
+                    "Your summary was saved successfully!"
+                )
+
+                return redirect(
+                    "ai_summary_review",
+                    pk=appointment.pk
+                )
+
+    return render(
+        request,
+        "appointments/ai_summary_review.html",
+        {
+            "appointment": appointment,
+            "summary": summary,
+            "ai_suggestion": ai_suggestion,
         }
     )

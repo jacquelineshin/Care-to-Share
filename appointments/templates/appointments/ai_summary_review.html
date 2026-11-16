@@ -1,0 +1,278 @@
+
+{% extends "appointments/base.html" %}
+
+{% block content %}
+
+<div class="ai-page">
+
+    <!-- Page Header -->
+    <div class="page-header">
+
+        <a href="{% url 'pre_visit_summary' appointment.pk %}"
+           class="back-link">
+            ← Back to Pre-Visit Summary
+        </a>
+
+        <span class="section-tag pre-visit-tag">
+            APPOINTMENT PREPARATION
+        </span>
+
+        <h1>Your Visit Summary</h1>
+
+        <p>
+            Organize your symptoms and questions
+            into a clear summary for your doctor.
+        </p>
+
+    </div>
+
+
+    <!-- Generate Summary -->
+    <div class="card ai-generate-card">
+
+        <h2>Prepare Your Summary</h2>
+
+        <p>
+            Generate a summary using the information
+            from your pre-visit questionnaire.
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <button type="submit"
+                    name="action"
+                    value="generate"
+                    class="btn">
+                Generate Summary
+            </button>
+        </form>
+
+    </div>
+
+
+    {% if summary %}
+
+        <!-- AI Comparison -->
+        {% if ai_suggestion %}
+
+        <div class="card ai-comparison-section">
+
+            <h2>Compare Your Summaries</h2>
+
+            <p>
+                Compare the original information
+                with the AI wording suggestion.
+            </p>
+
+            <div class="ai-comparison-grid">
+
+                <!-- Original -->
+                <div class="ai-compare-card original">
+
+                    <h3>Original Summary</h3>
+
+                    <p class="ai-compare-description">
+                        Based on your questionnaire
+                    </p>
+
+                    <div class="ai-compare-text">
+                        {{ summary|linebreaksbr }}
+                    </div>
+
+                </div>
+
+                <!-- AI Suggestion -->
+                <div class="ai-compare-card suggested">
+
+                    <h3>AI Wording Suggestion</h3>
+
+                    <p class="ai-compare-description">
+                        Suggested by local AI
+                    </p>
+
+                    <div class="ai-compare-text">
+                        {{ ai_suggestion|linebreaksbr }}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <p class="ai-suggestion-warning">
+                AI may introduce incorrect medical
+                details. Compare both versions carefully
+                before using the suggestion.
+            </p>
+
+            <div class="ai-compare-actions">
+
+                <button type="button"
+                        class="btn"
+                        id="use-ai-suggestion">
+                    Use AI Suggestion
+                </button>
+
+                <button type="button"
+                        class="btn-secondary"
+                        id="restore-original"
+                        disabled>
+                    Undo Suggestion
+                </button>
+
+            </div>
+
+            <p id="ai-apply-message"
+               class="ai-apply-message"
+               role="status"
+               aria-live="polite"></p>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- Review and Edit -->
+        <div class="card ai-edit-card">
+
+            <h2>Review & Edit</h2>
+
+            <p>
+                Review your summary and make any
+                necessary changes before saving.
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <label for="ai_summary">
+                    Your Appointment Summary
+                </label>
+
+                <textarea
+                    id="ai_summary"
+                    name="ai_summary"
+                    rows="14"
+                    maxlength="10000"
+                    required
+                >{{ summary }}</textarea>
+
+                <div class="ai-compare-actions">
+
+                    <button type="submit"
+                            name="action"
+                            value="improve"
+                            class="btn-secondary">
+                        ✨ Improve Wording with AI
+                    </button>
+
+                    <button type="submit"
+                            name="action"
+                            value="save"
+                            class="btn">
+                        Save Approved Summary
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- Reminder -->
+    <div class="ai-reminder">
+
+        <h3>Before Your Appointment</h3>
+
+        <p>
+            This summary is based on your
+            self-reported information and is
+            not a medical diagnosis.
+
+            Please verify the details before
+            sharing it with your healthcare provider.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- AI Suggestion JavaScript -->
+{% if ai_suggestion %}
+
+{{ ai_suggestion|json_script:"ai-suggestion-data" }}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const textarea = document.getElementById("ai_summary");
+    const useButton = document.getElementById("use-ai-suggestion");
+    const undoButton = document.getElementById("restore-original");
+    const message = document.getElementById("ai-apply-message");
+
+    const suggestion = JSON.parse(
+        document.getElementById("ai-suggestion-data").textContent
+    );
+
+    let previousDraft = null;
+
+    useButton.addEventListener("click", function () {
+
+        const currentText = textarea.value;
+
+        // Keep the original patient questions unchanged.
+        const heading = /(^|\n)QUESTIONS FOR MY DOCTOR\b/i;
+        const match = heading.exec(currentText);
+
+        if (!match) {
+            message.textContent =
+                "The questions section was not found. " +
+                "Your draft was not changed.";
+            return;
+        }
+
+        const start = match.index +
+            (match[1] === "\n" ? 1 : 0);
+
+        const questions = currentText.slice(start);
+
+        previousDraft = currentText;
+
+        textarea.value =
+            suggestion.trim() + "\n\n" + questions;
+
+        undoButton.disabled = false;
+
+        message.textContent =
+            "AI suggestion applied to your editable draft. " +
+            "Please verify all medical details before saving.";
+
+        textarea.focus();
+    });
+
+    undoButton.addEventListener("click", function () {
+
+        if (previousDraft !== null) {
+
+            textarea.value = previousDraft;
+            previousDraft = null;
+
+            undoButton.disabled = true;
+
+            message.textContent =
+                "Your previous draft has been restored.";
+
+            textarea.focus();
+        }
+    });
+
+});
+</script>
+
+{% endif %}
+
+{% endblock %}

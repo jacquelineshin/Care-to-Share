@@ -17,6 +17,10 @@ class Appointment(models.Model):
         blank=True,
         default=""
     )
+    ai_summary = models.TextField(
+        blank=True,
+        default=""
+    )
     def __str__(self):
         return f"{self.doctor_name} - {self.appointment_date.date()}"
 
