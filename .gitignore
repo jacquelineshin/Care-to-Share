@@ -19,3 +19,9 @@ db_backup.sqlite3
 
 # macOS
 .DS_Store
+
+# Production build output
+staticfiles/
+.hf_cache/
+!.env.example
+.env.local
