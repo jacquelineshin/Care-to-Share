@@ -294,3 +294,69 @@ class ProductionReadinessTests(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "couldn&#x27;t load educational resources")
+
+
+@override_settings(LOGIN_MAX_FAILURES=3, LOGIN_LOCKOUT_SECONDS=300)
+class LoginThrottleTests(TestCase):
+
+    def setUp(self):
+        cache.clear()
+        User.objects.create_user("pat", password="right-pass-123")
+        self.url = reverse("login")
+
+    def attempt(self, password, username="pat", ip="10.0.0.1"):
+        return self.client.post(
+            self.url,
+            {"username": username, "password": password},
+            REMOTE_ADDR=ip,
+        )
+
+    def test_correct_password_logs_in(self):
+        response = self.attempt("right-pass-123")
+        self.assertEqual(response.status_code, 302)
+
+    def test_lockout_after_max_failures(self):
+        for _ in range(3):
+            self.assertEqual(self.attempt("wrong").status_code, 200)
+
+        response = self.attempt("wrong")
+        self.assertEqual(response.status_code, 429)
+        self.assertEqual(response["Retry-After"], "300")
+        self.assertContains(response, "Too many failed login attempts", status_code=429)
+
+    def test_locked_account_rejects_even_correct_password(self):
+        for _ in range(3):
+            self.attempt("wrong")
+        response = self.attempt("right-pass-123")
+        self.assertEqual(response.status_code, 429)
+        self.assertNotIn("_auth_user_id", self.client.session)
+
+    def test_username_lock_applies_from_other_ips(self):
+        for i in range(3):
+            self.attempt("wrong", ip=f"10.0.0.{i}")
+        self.assertEqual(self.attempt("wrong", ip="10.9.9.9").status_code, 429)
+
+    def test_ip_lock_applies_across_usernames(self):
+        for i in range(3):
+            self.attempt("wrong", username=f"guess{i}")
+        self.assertEqual(self.attempt("wrong", username="someone").status_code, 429)
+
+    def test_lock_is_case_insensitive(self):
+        for _ in range(3):
+            self.attempt("wrong", username="PAT", ip="10.1.1.1")
+        self.assertEqual(self.attempt("wrong", username="pat", ip="10.2.2.2").status_code, 429)
+
+    def test_success_resets_username_counter(self):
+        self.attempt("wrong")
+        self.attempt("wrong")
+        self.assertEqual(self.attempt("right-pass-123").status_code, 302)
+        self.client.logout()
+        # Counter was cleared, so two more failures are allowed again.
+        self.assertEqual(self.attempt("wrong", ip="10.3.3.3").status_code, 200)
+        self.assertEqual(self.attempt("wrong", ip="10.3.3.3").status_code, 200)
+
+    def test_lockout_expires(self):
+        for _ in range(3):
+            self.attempt("wrong")
+        cache.clear()  # simulate the 5-minute window passing
+        self.assertEqual(self.attempt("right-pass-123").status_code, 302)

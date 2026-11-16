@@ -11,7 +11,7 @@ python manage.py seed_resources --embed                     # 30-article Medline
 python manage.py evaluate_recommender --strategy baseline   # original algorithm
 python manage.py evaluate_recommender --strategy improved   # after Part 4.4
 python manage.py evaluate_recommender --strategy improved --cases ai_services/data/eval_cases_holdout.json
-python manage.py test                                       # 19 tests
+python manage.py test                                       # 27 tests
 ```
 
 Raw per-case results: `ai_services/data/eval_results_{baseline,improved}[_holdout].json`.
@@ -285,13 +285,13 @@ Prices checked November 2026 on Render's pricing page and OpenAI's model page.
 |---|---|---|
 | **Environment variables** | Secret key, debug flag, hosts, DB URL and rate limit come from the environment. The app **refuses to start** with `DEBUG=False` and no secret key. The old hard-coded key is gone. Render generates the secret | `config/settings.py`, `render.yaml`, `.env.example`, `.gitignore` |
 | **Input validation** | Django forms validate symptom length, severity 1–10, dates and choices. The recommender ignores empty descriptions and caps query text at 3,000 characters | `appointments/forms.py`, `resource_recommender.py` |
-| **Authentication & permissions** | Every patient page is `@login_required`. All queries are filtered by `user=request.user`, so another user's concern returns 404 (tested). Password validators are on. Sessions expire after 8 hours | `views.py`, `settings.py`, tests |
+| **Authentication & permissions** | Every patient page is `@login_required`. All queries are filtered by `user=request.user`, so another user's concern returns 404 (tested). Password validators are on. Sessions expire after 8 hours. Repeated failed logins trigger a temporary lockout (see Rate limiting) | `views.py`, `settings.py`, tests |
 | **API key protection** | The AI model is local, so there are **no API keys to leak**. If option B were adopted, the key would live only in an environment variable | design |
 | **Transport & headers** | With `DEBUG=False`: HTTPS redirect, secure + HttpOnly cookies, HSTS (30 days), nosniff, `X-Frame-Options: DENY`, same-origin referrer policy, CSRF trusted origins | `settings.py` |
 | **Error handling** | The recommendation view catches model and database errors and shows "We couldn't load educational resources right now" with HTTP 200 (tested with a simulated crash). `/healthz/` returns 503 if the DB is down. A model warm-up failure doesn't stop the server | `views.py`, `ai_services/health.py`, `gunicorn.conf.py` |
-| **Rate limiting** | 20 AI recommendation requests per user per minute (configurable). Over the limit returns **HTTP 429** with `Retry-After: 60` and a friendly page (tested) | `ai_services/ratelimit.py` |
-| **Logging & monitoring** | Logs go to stdout and are collected by Render. Each AI call logs `concern id, result count, latency_ms`. Access log via gunicorn. Render health check on `/healthz/` | `settings.LOGGING`, `views.py` |
+| **Rate limiting** | **AI endpoint:** 20 recommendation requests per user per minute (configurable). Over the limit returns **HTTP 429** with `Retry-After: 60` and a friendly page (tested). **Login (brute-force protection):** after **5 failed attempts for the same username *or* from the same IP within 5 minutes**, logins are refused with HTTP 429 and "Too many failed login attempts. Please wait 5 minutes", even if the next password is correct. The username check is case-insensitive, and a successful login clears that username's counter. Verified in a browser: 5 failures → 6th request 429. 8 tests | `ai_services/ratelimit.py`, `config/login_throttle.py` |
+| **Logging & monitoring** | Logs go to stdout and are collected by Render. Each AI call logs `concern id, result count, latency_ms`. Failed and blocked logins log `login.failed` / `login.locked` with the IP only; usernames are hashed, never logged. Access log via gunicorn. Render health check on `/healthz/` | `settings.LOGGING`, `views.py` |
 | **User privacy** | **Patient text is never logged** (only ids, counts and latency) and is never sent to a third party (local model). The database is managed Postgres with encryption at rest provided by the host | design, `views.py` |
 | **AI-related risks** | Only vetted MedlinePlus articles can be shown, so there is no generated medical text and no hallucinated advice. A disclaimer on the page says the content is educational, not diagnostic. Uncovered symptoms can still get a loosely related article (Failure 2), and there is **no emergency detection yet** (Failure 3). This is the most important remaining risk, with a concrete fix proposed | template, 4.3 |
 
-**Not yet done (honest gaps):** emergency/red-flag detection (Failure 3), a shared Redis cache for rate limits across multiple instances, an error-tracking service (e.g., Sentry), account lockout after repeated failed logins, and a formal HIPAA review before handling real patient data.
+**Not yet done (honest gaps):** emergency/red-flag detection (Failure 3), a shared Redis cache for rate limits across multiple instances, an error-tracking service (e.g., Sentry), login throttling on the Django admin login (`/admin/login/` still uses the default view), and a formal HIPAA review before handling real patient data.
