@@ -16,26 +16,6 @@ from .forms import (
 )
 from django.db.models import Case, When, Value, IntegerField
 from .models import Appointment, HealthConcern, VisitInstruction
-def attach_safety_alerts(concerns):
-    """
-    Run the rule-based red-flag screen on each concern so the page can
-    show an urgent-care banner. This never calls the embedding model and
-    never raises, so it is safe to use on every page load.
-    """
-    from ai_services.safety import screen_concern
-
-    concerns = list(concerns)
-
-    for concern in concerns:
-        try:
-            concern.safety_alert = screen_concern(concern)
-        except Exception:
-            logger.exception("Safety screening failed for concern %s.", concern.pk)
-            concern.safety_alert = None
-
-    return concerns
-
-
 def home(request):
     return render(request, "appointments/home.html")
 
@@ -91,8 +71,6 @@ def appointment_detail(request, pk):
         )
     ).order_by("priority_order", "-severity")
 
-    concerns = attach_safety_alerts(concerns)
-
     return render(
         request,
         "appointments/appointment_detail.html",
@@ -120,8 +98,6 @@ def pre_visit_summary(request, pk):
             output_field=IntegerField(),
         )
     ).order_by("priority_order", "-severity")
-
-    concerns = attach_safety_alerts(concerns)
 
     return render(
         request,
@@ -652,26 +628,28 @@ def recommended_resources(request, pk):
         appointment__user=request.user
     )
 
-    from ai_services.resource_recommender import get_recommendations
+    recommendations = []
 
-    # get_recommendations never raises; failures come back as a status
-    # and a user-facing message so the page always renders.
-    result = get_recommendations(concern)
+    try:
+        from ai_services.resource_recommender import recommend_resources
 
-    logger.info(
-        "Recommendations concern=%s status=%s results=%s latency_ms=%s",
-        concern.pk,
-        result.status,
-        len(result.recommendations),
-        result.latency_ms,
-    )
+        recommendations = recommend_resources(concern)
+
+    except Exception:
+        logger.exception(
+            "Failed to generate educational resource recommendations."
+        )
+
+        messages.error(
+            request,
+            "We couldn't load educational resources right now. Please try again later."
+        )
 
     return render(
         request,
         "appointments/recommended_resources.html",
         {
             "concern": concern,
-            "result": result,
-            "recommendations": result.recommendations,
+            "recommendations": recommendations,
         }
     )
