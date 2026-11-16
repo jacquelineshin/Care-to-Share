@@ -99,8 +99,9 @@ Final (improved) system. The "Before" column shows the original algorithm's outp
 - **What failed:**
   - The originally committed `db.sqlite3` had not applied migration `0004_educationalresource`, and the library was empty. The feature could only show "couldn't load" or "no resources" for a new teammate or grader.
   - `appointments/models.py` defines `VisitResponse` twice, and `appointments/views.py` defines `visit_companion` twice. Django prints `RuntimeWarning: Model 'appointments.visitresponse' was already registered`, and the second definitions silently replace the first.
-- **Impact:** the feature didn't work out of the box, and duplicated code can drift.
-- **Fixed / to improve:** `seed_resources --embed` now loads the library, and the build script runs `migrate` and the seed automatically on every deploy. The duplicate definitions should be removed by the visit-companion author (not changed here, to avoid stepping on a teammate's work).
+  - `recommended_resources.html` begins its own `<!DOCTYPE html><html><head><title>` before `{% extends %}`. When the deployed page is opened, the browser tab title shows raw HTML ("<!DOCTYPE html> <html lang= en > …") instead of "Care to Share". The page body renders correctly.
+- **Impact:** the feature didn't work out of the box, duplicated code can drift, and the recommendations page looks broken in the tab bar.
+- **Fixed / to improve:** `seed_resources --embed` now loads the library, and the build/deploy scripts run `migrate` and the seed automatically. The duplicate definitions and the stray HTML wrapper should be removed by their authors (not changed here, to avoid stepping on teammates' work).
 
 ### Failure 5 — Cold-start latency
 - **What failed:** the first recommendation in a new process waited ~2.2 s for PyTorch and the model to load, versus ~10 ms afterwards.
@@ -151,7 +152,41 @@ Why the cleaned query helps: the top similarity scores for no-match inputs dropp
 
 ## 5.1 Deployment
 
-**Target platform: Render** (managed Python web service + managed Postgres). The repo now contains everything needed for a one-click Blueprint deploy:
+### Deployment approach: reproducible local production deployment
+
+We deliver a **reproducible local deployment**. It runs the same production stack as the cloud configuration on one machine with one command:
+
+```bash
+git clone https://github.com/jacquelineshin/Care-to-Share.git
+cd Care-to-Share
+./deploy_local.sh          # → http://localhost:8000
+```
+
+`deploy_local.sh` performs these steps:
+1. Creates a virtual environment and installs pinned dependencies.
+2. Generates a random `DJANGO_SECRET_KEY`, kept in git-ignored `.env.local`.
+3. Sets `DJANGO_DEBUG=False`.
+4. Collects static files (served by WhiteNoise) and runs migrations.
+5. Loads the 30-article library, downloads the model, pre-computes embeddings, and creates the demo account.
+6. Starts **gunicorn** with the model pre-loaded.
+
+The only difference from the cloud setup is `DJANGO_HTTPS=False`, because there is no TLS on `localhost`, and SQLite instead of Postgres.
+
+### Technical justification for not deploying publicly
+
+1. **The AI model's memory needs exceed every free hosting tier we evaluated.** The gunicorn worker measured **494 MB RSS** with the model loaded, and the install needs ~1 GB of disk (PyTorch alone is 634 MB).
+   - Render Free and Starter give 512 MB of RAM, so the worker would be killed for running out of memory. The smallest plan that fits is Standard (2 GB) at $25/month, plus $6/month for Postgres.
+   - Hugging Face Spaces has enough RAM (CPU Basic: 2 vCPU / 16 GB), but its documentation now states that Docker and Gradio Spaces "require a paid plan to create" (PRO, $9/month). Its disk is also not persistent, so user data would be lost on every restart.
+2. **Privacy.** Care to Share stores personal health information. Putting a public demo with real sign-ups on a free or hobby host, with no data-processing agreement, is not appropriate for this kind of data. A local deployment keeps all data on the operator's machine.
+3. **Removing the AI is not an option.** Swapping in a hosted embedding API to fit a 512 MB tier would send symptom text to a third party (see 5.3). Dropping the model would remove the product's core feature.
+
+### Evidence the deployment works
+
+The deployment was verified **from a fresh clone** (no virtual environment, database or model cache), and the primary workflow was run in a browser against the gunicorn server. Results are in "Local deployment verification" below.
+
+### Cloud-ready configuration (not deployed, for cost reasons)
+
+The repository is also ready for a one-click Render Blueprint deploy if the team chooses to pay for it:
 
 | File | Purpose |
 |---|---|
@@ -162,20 +197,22 @@ Why the cleaned query helps: the top similarity scores for no-match inputs dropp
 | `config/settings.py` | Configured from environment variables (`DATABASE_URL`, `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`); WhiteNoise serves static files |
 | `.env.example` | Documents every variable (real `.env` files are git-ignored) |
 
-**Deploy steps:**
-1. In Render, choose **New → Blueprint** and connect this GitHub repository. Render reads `render.yaml`, creates the database and web service, and runs `build.sh`.
-2. Wait for the `/healthz/` check to go green.
-3. Open the site, register an account, and create an appointment and a health concern. Then click **Find Educational Resources** to exercise the primary AI workflow.
+To deploy on Render: choose **New → Blueprint** and connect this repository. Render reads `render.yaml`, creates the database and web service, runs `build.sh`, and waits for `/healthz/` to pass.
 
-**Deployed URL:** _add after deploying_.
+### Local deployment verification
 
-**Verified locally in production mode**, with `DJANGO_DEBUG=False`, a random secret key, gunicorn, and collected static files:
-- `/healthz/` returned `{"status": "ok", "database": true}`.
-- The login page returned 200.
-- WhiteNoise served `style.css` (200).
-- `/dashboard/` redirected anonymous users to login (302).
-- The worker logged "Embedding model loaded" at boot.
-- `manage.py check --deploy` reports only `SECURE_HSTS_PRELOAD` (intentionally off; preload is hard to undo).
+The test was run on 2026-11-16 on a fresh `git clone` (no `.venv`, no `db.sqlite3`, empty model cache), with `./deploy_local.sh` on port 8100:
+
+| Check | Result |
+|---|---|
+| Install, migrate, seed, model download | Completed with no manual steps: "Resources created: 30", "Embeddings computed for 30 resources", "Demo user 'demo' ready" |
+| Server start | gunicorn worker logged **"Embedding model loaded"** before serving requests |
+| `GET /healthz/` | `{"status": "ok", "database": true}` |
+| Anonymous `GET /dashboard/` | `302` → `/accounts/login/?next=/dashboard/` |
+| Security headers (`DEBUG=False`) | `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: same-origin` |
+| **Primary workflow in a browser** | Log in → dashboard → add concern *"Can't sleep — I lie awake until 3am most nights and feel exhausted at work"* (severity 6) → concern saved → **Find Educational Resources** → *Insomnia and Trouble Sleeping* (0.583), *Fatigue* (0.462) |
+| Monitoring log | `ai.recommend concern=5 results=2 latency_ms=22.5`. The symptom text appears **0 times** in the server log |
+| `manage.py check --deploy` (cloud settings) | Only `SECURE_HSTS_PRELOAD` remains (intentionally off; preload is hard to undo) |
 
 ## 5.2 Infrastructure requirements
 
