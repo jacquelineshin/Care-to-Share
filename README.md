@@ -17,9 +17,13 @@ python manage.py runserver
 
 Open http://localhost:8000. The demo user is `demo`; the password is in `ai_services/management/commands/seed_demo.py`. The first run downloads the `all-MiniLM-L6-v2` model (~90 MB).
 
-## Deploy (Render)
+## Production-mode deployment (local)
 
-**New → Blueprint** → connect this repo. `render.yaml` creates the web service and Postgres database. `build.sh` installs dependencies, collects static files, runs migrations, and pre-computes embeddings. Environment variables are documented in `.env.example`.
+```bash
+./deploy_local.sh        # gunicorn, DEBUG=False, model pre-loaded → http://localhost:8000
+```
+
+This installs the dependencies, generates a secret key (stored in git-ignored `.env.local`), migrates, seeds the article library and the demo user, then serves the app. See section 5.1 of [EVALUATION_AND_DEPLOYMENT.md](EVALUATION_AND_DEPLOYMENT.md) for why the deployment is local, and for the Render Blueprint (`render.yaml`) that deploys the same app to the cloud.
 
 ## Commands
 
