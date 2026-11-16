@@ -1,0 +1,728 @@
+{
+  "summary": {
+    "cases": 31,
+    "hit_at_1": 0.885,
+    "hit_at_3": 0.885,
+    "mrr": 0.885,
+    "precision": 0.814,
+    "empty_rate_in_scope": 0.115,
+    "false_positive_rate": 0,
+    "error_rate": 0,
+    "mean_quality": 8.903,
+    "latency_p50_ms": 9.0,
+    "latency_p95_ms": 11.3,
+    "strategy": "baseline",
+    "model_load_ms": 297.9
+  },
+  "rows": [
+    {
+      "id": 1,
+      "category": "direct",
+      "symptom": "Headaches",
+      "description": "Frequent headaches in the afternoon, feels like pressure around my forehead.",
+      "relevant": [
+        "Headache",
+        "Migraine"
+      ],
+      "returned": [
+        {
+          "topic": "Headache",
+          "score": 0.652
+        },
+        {
+          "topic": "Migraine",
+          "score": 0.609
+        }
+      ],
+      "error": false,
+      "latency_ms": 21.1,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 2,
+      "category": "direct",
+      "symptom": "Lower back pain",
+      "description": "Aching pain in my lower back after sitting at my desk all day.",
+      "relevant": [
+        "Back Pain"
+      ],
+      "returned": [
+        {
+          "topic": "Back Pain",
+          "score": 0.637
+        }
+      ],
+      "error": false,
+      "latency_ms": 10.5,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 3,
+      "category": "direct",
+      "symptom": "Insomnia",
+      "description": "I can't fall asleep until 3am and wake up exhausted.",
+      "relevant": [
+        "Insomnia",
+        "Fatigue"
+      ],
+      "returned": [
+        {
+          "topic": "Insomnia",
+          "score": 0.638
+        }
+      ],
+      "error": false,
+      "latency_ms": 9.0,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 4,
+      "category": "direct",
+      "symptom": "Heartburn",
+      "description": "Burning feeling in my chest after dinner, worse when I lie down.",
+      "relevant": [
+        "Acid Reflux"
+      ],
+      "returned": [
+        {
+          "topic": "Acid Reflux",
+          "score": 0.706
+        },
+        {
+          "topic": "Chest Pain",
+          "score": 0.497
+        }
+      ],
+      "error": false,
+      "latency_ms": 8.9,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 0.5,
+      "empty": false,
+      "quality": 8
+    },
+    {
+      "id": 5,
+      "category": "direct",
+      "symptom": "Knee pain",
+      "description": "My right knee hurts and swells after running.",
+      "relevant": [
+        "Knee Pain",
+        "Arthritis"
+      ],
+      "returned": [
+        {
+          "topic": "Knee Pain",
+          "score": 0.624
+        },
+        {
+          "topic": "Arthritis",
+          "score": 0.458
+        }
+      ],
+      "error": false,
+      "latency_ms": 9.0,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 6,
+      "category": "lay_language",
+      "symptom": "Pounding head",
+      "description": "Throbbing on one side of my head with flashing lights before it starts. Light makes it worse.",
+      "relevant": [
+        "Migraine",
+        "Headache"
+      ],
+      "returned": [
+        {
+          "topic": "Migraine",
+          "score": 0.523
+        },
+        {
+          "topic": "Headache",
+          "score": 0.456
+        }
+      ],
+      "error": false,
+      "latency_ms": 8.8,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 7,
+      "category": "lay_language",
+      "symptom": "Always tired",
+      "description": "No energy at all, even after sleeping 9 hours. Hard to get through the work day.",
+      "relevant": [
+        "Fatigue",
+        "Insomnia",
+        "Depression"
+      ],
+      "returned": [
+        {
+          "topic": "Fatigue",
+          "score": 0.6
+        }
+      ],
+      "error": false,
+      "latency_ms": 8.8,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 8,
+      "category": "lay_language",
+      "symptom": "Room spinning",
+      "description": "When I roll over in bed the room spins and I feel off balance.",
+      "relevant": [
+        "Dizziness"
+      ],
+      "returned": [
+        {
+          "topic": "Dizziness",
+          "score": 0.566
+        }
+      ],
+      "error": false,
+      "latency_ms": 9.4,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 9,
+      "category": "lay_language",
+      "symptom": "Itchy dry skin",
+      "description": "Red itchy patches on the inside of my elbows that crack in winter.",
+      "relevant": [
+        "Eczema"
+      ],
+      "returned": [
+        {
+          "topic": "Eczema",
+          "score": 0.613
+        },
+        {
+          "topic": "Allergies",
+          "score": 0.464
+        }
+      ],
+      "error": false,
+      "latency_ms": 9.6,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 0.5,
+      "empty": false,
+      "quality": 8
+    },
+    {
+      "id": 10,
+      "category": "lay_language",
+      "symptom": "Sneezing and runny nose",
+      "description": "Every spring I sneeze constantly and my eyes are itchy and watery.",
+      "relevant": [
+        "Allergies",
+        "Common Cold"
+      ],
+      "returned": [
+        {
+          "topic": "Allergies",
+          "score": 0.604
+        }
+      ],
+      "error": false,
+      "latency_ms": 11.3,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 11,
+      "category": "lay_language",
+      "symptom": "Feeling down",
+      "description": "I've lost interest in things I used to enjoy and feel hopeless most days.",
+      "relevant": [
+        "Depression",
+        "Anxiety",
+        "Stress"
+      ],
+      "returned": [],
+      "error": false,
+      "latency_ms": 9.3,
+      "hit_at_1": false,
+      "hit_at_3": false,
+      "reciprocal_rank": 0.0,
+      "precision": 0.0,
+      "empty": true,
+      "quality": 1
+    },
+    {
+      "id": 12,
+      "category": "lay_language",
+      "symptom": "Burning when I pee",
+      "description": "It burns when I urinate and I feel like I need to go all the time.",
+      "relevant": [
+        "Urinary Tract Infection"
+      ],
+      "returned": [
+        {
+          "topic": "Urinary Tract Infection",
+          "score": 0.568
+        }
+      ],
+      "error": false,
+      "latency_ms": 9.1,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 13,
+      "category": "lay_language",
+      "symptom": "Upset stomach",
+      "description": "Feeling queasy and threw up twice this morning.",
+      "relevant": [
+        "Nausea",
+        "Stomach Pain"
+      ],
+      "returned": [
+        {
+          "topic": "Nausea",
+          "score": 0.486
+        }
+      ],
+      "error": false,
+      "latency_ms": 9.4,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 14,
+      "category": "lay_language",
+      "symptom": "Racing heart and worry",
+      "description": "I constantly worry, my heart races and my hands shake before meetings.",
+      "relevant": [
+        "Anxiety",
+        "Stress"
+      ],
+      "returned": [
+        {
+          "topic": "Anxiety",
+          "score": 0.553
+        }
+      ],
+      "error": false,
+      "latency_ms": 9.1,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 15,
+      "category": "short_vague",
+      "symptom": "Cough",
+      "description": "Coughing.",
+      "relevant": [
+        "Cough",
+        "Common Cold",
+        "Asthma"
+      ],
+      "returned": [
+        {
+          "topic": "Cough",
+          "score": 0.485
+        }
+      ],
+      "error": false,
+      "latency_ms": 8.3,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 16,
+      "category": "short_vague",
+      "symptom": "Stomach ache",
+      "description": "Hurts.",
+      "relevant": [
+        "Stomach Pain",
+        "Acid Reflux",
+        "Constipation",
+        "Nausea"
+      ],
+      "returned": [
+        {
+          "topic": "Stomach Pain",
+          "score": 0.492
+        }
+      ],
+      "error": false,
+      "latency_ms": 8.1,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 17,
+      "category": "short_vague",
+      "symptom": "Sore throat",
+      "description": "Scratchy.",
+      "relevant": [
+        "Sore Throat",
+        "Common Cold",
+        "Flu"
+      ],
+      "returned": [
+        {
+          "topic": "Sore Throat",
+          "score": 0.565
+        }
+      ],
+      "error": false,
+      "latency_ms": 8.1,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 18,
+      "category": "misspelling",
+      "symptom": "Migrane",
+      "description": "Bad migranes with nausea.",
+      "relevant": [
+        "Migraine",
+        "Headache",
+        "Nausea"
+      ],
+      "returned": [
+        {
+          "topic": "Migraine",
+          "score": 0.574
+        },
+        {
+          "topic": "Nausea",
+          "score": 0.474
+        }
+      ],
+      "error": false,
+      "latency_ms": 9.0,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 19,
+      "category": "misspelling",
+      "symptom": "Diarrea",
+      "description": "Watery stool for two days.",
+      "relevant": [
+        "Diarrhea"
+      ],
+      "returned": [
+        {
+          "topic": "Diarrhea",
+          "score": 0.669
+        },
+        {
+          "topic": "Constipation",
+          "score": 0.472
+        }
+      ],
+      "error": false,
+      "latency_ms": 9.0,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 0.5,
+      "empty": false,
+      "quality": 8
+    },
+    {
+      "id": 20,
+      "category": "multi_symptom",
+      "symptom": "Fever and body aches",
+      "description": "Sudden fever, chills, body aches and a dry cough since yesterday.",
+      "relevant": [
+        "Flu",
+        "Common Cold",
+        "Cough"
+      ],
+      "returned": [
+        {
+          "topic": "Flu",
+          "score": 0.527
+        }
+      ],
+      "error": false,
+      "latency_ms": 8.8,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 21,
+      "category": "multi_symptom",
+      "symptom": "Thirsty all the time",
+      "description": "Always thirsty, peeing a lot, and my vision is a little blurry.",
+      "relevant": [
+        "Diabetes"
+      ],
+      "returned": [],
+      "error": false,
+      "latency_ms": 8.9,
+      "hit_at_1": false,
+      "hit_at_3": false,
+      "reciprocal_rank": 0.0,
+      "precision": 0.0,
+      "empty": true,
+      "quality": 1
+    },
+    {
+      "id": 22,
+      "category": "multi_symptom",
+      "symptom": "Wheezing",
+      "description": "Wheezing and chest tightness when I exercise in cold air.",
+      "relevant": [
+        "Asthma",
+        "Shortness of Breath"
+      ],
+      "returned": [
+        {
+          "topic": "Asthma",
+          "score": 0.508
+        },
+        {
+          "topic": "Shortness of Breath",
+          "score": 0.476
+        }
+      ],
+      "error": false,
+      "latency_ms": 8.9,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 23,
+      "category": "red_flag",
+      "symptom": "Chest pain",
+      "description": "Crushing pressure in my chest spreading to my left arm, sweating.",
+      "relevant": [
+        "Chest Pain"
+      ],
+      "returned": [
+        {
+          "topic": "Chest Pain",
+          "score": 0.671
+        }
+      ],
+      "error": false,
+      "latency_ms": 9.3,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 24,
+      "category": "red_flag",
+      "symptom": "Can't breathe",
+      "description": "I am struggling to breathe and my lips look blue.",
+      "relevant": [
+        "Shortness of Breath",
+        "Asthma"
+      ],
+      "returned": [
+        {
+          "topic": "Shortness of Breath",
+          "score": 0.636
+        }
+      ],
+      "error": false,
+      "latency_ms": 8.9,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 1.0,
+      "empty": false,
+      "quality": 10
+    },
+    {
+      "id": 25,
+      "category": "red_flag",
+      "symptom": "Hopeless",
+      "description": "I have been thinking about ending my life.",
+      "relevant": [
+        "Depression"
+      ],
+      "returned": [],
+      "error": false,
+      "latency_ms": 9.0,
+      "hit_at_1": false,
+      "hit_at_3": false,
+      "reciprocal_rank": 0.0,
+      "precision": 0.0,
+      "empty": true,
+      "quality": 1
+    },
+    {
+      "id": 26,
+      "category": "out_of_scope",
+      "symptom": "Car trouble",
+      "description": "My car makes a grinding noise when I brake.",
+      "relevant": [],
+      "returned": [],
+      "error": false,
+      "latency_ms": 8.7,
+      "false_positive": false,
+      "quality": 10
+    },
+    {
+      "id": 27,
+      "category": "out_of_scope",
+      "symptom": "asdfgh",
+      "description": "qwerty zxcv lorem ipsum",
+      "relevant": [],
+      "returned": [],
+      "error": false,
+      "latency_ms": 8.4,
+      "false_positive": false,
+      "quality": 10
+    },
+    {
+      "id": 28,
+      "category": "out_of_scope",
+      "symptom": "Insurance bill",
+      "description": "How do I dispute a charge on my insurance bill?",
+      "relevant": [],
+      "returned": [],
+      "error": false,
+      "latency_ms": 8.6,
+      "false_positive": false,
+      "quality": 10
+    },
+    {
+      "id": 29,
+      "category": "no_coverage",
+      "symptom": "Toothache",
+      "description": "Sharp pain in a back molar when I drink something cold.",
+      "relevant": [],
+      "returned": [],
+      "error": false,
+      "latency_ms": 8.7,
+      "false_positive": false,
+      "quality": 10
+    },
+    {
+      "id": 30,
+      "category": "no_coverage",
+      "symptom": "Hair loss",
+      "description": "Noticing a lot more hair falling out in the shower.",
+      "relevant": [],
+      "returned": [],
+      "error": false,
+      "latency_ms": 8.6,
+      "false_positive": false,
+      "quality": 10
+    },
+    {
+      "id": 31,
+      "category": "negation",
+      "symptom": "Chest tightness",
+      "description": "Mild chest tightness when I'm anxious that goes away when I relax. No pain in my arm or jaw.",
+      "relevant": [
+        "Anxiety",
+        "Chest Pain",
+        "Stress"
+      ],
+      "returned": [
+        {
+          "topic": "Anxiety",
+          "score": 0.576
+        },
+        {
+          "topic": "Chest Pain",
+          "score": 0.526
+        },
+        {
+          "topic": "Shortness of Breath",
+          "score": 0.462
+        }
+      ],
+      "error": false,
+      "latency_ms": 10.1,
+      "hit_at_1": true,
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "precision": 0.6666666666666666,
+      "empty": false,
+      "quality": 9
+    }
+  ]
+}
