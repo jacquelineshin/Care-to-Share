@@ -151,9 +151,30 @@ LOGOUT_REDIRECT_URL = "home"
 # Production security (only when DEBUG is off)
 # ---------------------------------------------------------------------------
 
+def _env_flag(name, default):
+    return os.environ.get(name, str(default)).strip().lower() in ("1", "true", "yes")
+
+
+# Deployment overrides. These only take effect when the variables are set
+# (deploy_local.sh and render.yaml set them); a normal local checkout keeps
+# the DEBUG / ALLOWED_HOSTS values defined above.
+if "DJANGO_DEBUG" in os.environ:
+    DEBUG = _env_flag("DJANGO_DEBUG", True)
+
+if os.environ.get("DJANGO_ALLOWED_HOSTS"):
+    ALLOWED_HOSTS += [
+        host.strip()
+        for host in os.environ["DJANGO_ALLOWED_HOSTS"].split(",")
+        if host.strip() and host.strip() not in ALLOWED_HOSTS
+    ]
+    CSRF_TRUSTED_ORIGINS = [
+        f"https://{host}" for host in ALLOWED_HOSTS
+        if host not in ("localhost", "127.0.0.1")
+    ]
+
 # DJANGO_HTTPS=False is only for the local production-mode deployment
 # (plain http://localhost); every internet-facing deploy keeps it True.
-HTTPS_ENABLED = env_bool("DJANGO_HTTPS", True)
+HTTPS_ENABLED = _env_flag("DJANGO_HTTPS", True)
 
 if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True

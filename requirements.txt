@@ -7,6 +7,11 @@ sqlparse==0.6.1
 sentence-transformers==6.3.0
 torch==2.15.0
 
+# Imported by the AI pre-visit summary feature and settings (.env loading)
+python-dotenv==1.2.4
+ollama==0.6.3
+openai==3.52.0
+
 # Production
 gunicorn==27.0.1
 whitenoise==6.12.0
