@@ -27,7 +27,7 @@ pip install --quiet -r requirements.txt
 # Production settings. A random secret key is generated once and kept in
 # .env.local (git-ignored) so sessions survive restarts.
 if [ ! -f .env.local ]; then
-    echo "DJANGO_SECRET_KEY=$(python -c 'import secrets; print(secrets.token_urlsafe(50))')" > .env.local
+    echo "SECRET_KEY=$(python -c 'import secrets; print(secrets.token_urlsafe(50))')" > .env.local
 fi
 set -a
 # shellcheck disable=SC1091
@@ -38,7 +38,18 @@ export DJANGO_HTTPS=False
 export DJANGO_ALLOWED_HOSTS="${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}"
 export HF_HOME="${HF_HOME:-$PWD/.hf_cache}"
 
-echo "==> Preparing database, static files and AI model"
+# Optional: the AI pre-visit summary's "improve wording" step uses a local
+# Ollama server. Without it, that one button shows an error message and
+# everything else works.
+if command -v ollama >/dev/null 2>&1; then
+    echo "==> Pulling Ollama model qwen2.5:0.5b (AI summary wording)"
+    ollama pull qwen2.5:0.5b || echo "    (could not pull; is 'ollama serve' running?)"
+else
+    echo "==> Ollama not installed: AI summary wording suggestions will be unavailable"
+    echo "    Install from https://ollama.com and run 'ollama serve' to enable them."
+fi
+
+echo "==> Preparing database, static files and AI models"
 python manage.py collectstatic --no-input --verbosity 0
 python manage.py migrate --no-input --verbosity 0
 python manage.py seed_demo

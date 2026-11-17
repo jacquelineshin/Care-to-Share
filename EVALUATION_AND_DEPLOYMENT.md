@@ -2,7 +2,10 @@
 
 Part 4 (Evaluation, Testing, and Improvement) and Part 5 (Deployment, Cost, and Production Readiness).
 
-The AI feature evaluated here is the **educational-resource recommender** (`ai_services/resource_recommender.py`). It embeds a patient's health concern with `sentence-transformers/all-MiniLM-L6-v2` and recommends the most semantically similar articles from the `EducationalResource` table.
+Care to Share has two AI features:
+
+1. **Educational-resource recommender** (`ai_services/resource_recommender.py`). It embeds a patient's health concern with `sentence-transformers/all-MiniLM-L6-v2` and recommends the most semantically similar articles from the `EducationalResource` table. **This is the feature evaluated and improved in Part 4.**
+2. **AI pre-visit summary** (`appointments/ai_services.py`). It builds a factual summary from the patient's concerns, then optionally asks a small local LLM (`qwen2.5:0.5b` via Ollama) to suggest clearer wording, which the patient reviews before saving. Part 5 covers its infrastructure, cost, reliability and risks. Its LLM step was not quantitatively evaluated in Part 4 (see Failure 6).
 
 Every number below comes from code in this repository:
 
@@ -107,6 +110,12 @@ Final (improved) system. The "Before" column shows the original algorithm's outp
 - **What failed:** the first recommendation in a new process waited ~2.2 s for PyTorch and the model to load, versus ~10 ms afterwards.
 - **Fixed (Part 5):** `gunicorn.conf.py` loads the model in `post_worker_init`, so the wait happens at server boot instead of on a user's request. The build step downloads the model and pre-computes article embeddings.
 
+### Failure 6 — The AI summary's wording step depends on a separate Ollama server
+- **What failed:** on a fresh deployment without Ollama, clicking **✨ Improve Wording with AI** cannot reach the model. The server logs `ConnectionError: Failed to connect to Ollama`.
+- **Why:** `improve_summary_wording()` calls a local Ollama server (`qwen2.5:0.5b`), which is a separate program from Django and pip. The test machine did not have it installed, which is also why this LLM step could not be quantitatively evaluated here.
+- **Impact:** limited. The view catches the error and shows "Unable to improve the wording. Please check that Ollama is running.", and the factual summary itself (no LLM) still generates and saves normally. Verified in a browser on 2026-11-17.
+- **Could be improved:** `deploy_local.sh` now pulls the model automatically when Ollama is installed and prints a clear notice when it is not. Next steps: add an Ollama container or service to the deployment, show the button only when the model is reachable, and build a faithfulness test set (does the rewrite keep every severity, date and frequency, and add nothing?) to evaluate the LLM the same way the recommender was evaluated.
+
 ## 4.4 Improvement
 
 ### Before
@@ -164,13 +173,16 @@ cd Care-to-Share
 
 `deploy_local.sh` performs these steps:
 1. Creates a virtual environment and installs pinned dependencies.
-2. Generates a random `DJANGO_SECRET_KEY`, kept in git-ignored `.env.local`.
+2. Generates a random `SECRET_KEY`, kept in git-ignored `.env.local`.
 3. Sets `DJANGO_DEBUG=False`.
 4. Collects static files (served by WhiteNoise) and runs migrations.
-5. Loads the 30-article library, downloads the model, pre-computes embeddings, and creates the demo account.
-6. Starts **gunicorn** with the model pre-loaded.
+5. If Ollama is installed, pulls `qwen2.5:0.5b` for the AI summary's wording step; otherwise prints a notice that this one button will be unavailable.
+6. Loads the 30-article library, downloads the embedding model, pre-computes embeddings, and creates the demo account.
+7. Starts **gunicorn** with the embedding model pre-loaded.
 
 The only difference from the cloud setup is `DJANGO_HTTPS=False`, because there is no TLS on `localhost`, and SQLite instead of Postgres.
+
+`DJANGO_DEBUG` and `DJANGO_ALLOWED_HOSTS` override the values in `settings.py` only when they are set. A normal developer checkout keeps the team's local defaults (`DEBUG = True`), while the deploy script and `render.yaml` switch to production mode.
 
 ### Technical justification for not deploying publicly
 
@@ -190,18 +202,18 @@ The repository is also ready for a one-click Render Blueprint deploy if the team
 
 | File | Purpose |
 |---|---|
-| `render.yaml` | Web service (Standard plan) + Postgres database, health check, env vars, generated `DJANGO_SECRET_KEY` |
+| `render.yaml` | Web service (Standard plan) + Postgres database, health check, env vars, generated `SECRET_KEY` |
 | `build.sh` | `pip install` → `collectstatic` → `migrate` → `seed_resources --embed` (downloads the model, loads the library, pre-computes embeddings) |
 | `gunicorn.conf.py` | 1 worker × 4 threads, model pre-loaded at worker start |
 | `requirements.txt` | Pinned versions; **CPU-only PyTorch** wheel (avoids the ~2 GB CUDA build) |
-| `config/settings.py` | Configured from environment variables (`DATABASE_URL`, `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`); WhiteNoise serves static files |
+| `config/settings.py` | Configured from environment variables / `.env` (`SECRET_KEY`, `DATABASE_URL`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_HTTPS`); WhiteNoise serves static files |
 | `.env.example` | Documents every variable (real `.env` files are git-ignored) |
 
-To deploy on Render: choose **New → Blueprint** and connect this repository. Render reads `render.yaml`, creates the database and web service, runs `build.sh`, and waits for `/healthz/` to pass.
+To deploy on Render: choose **New → Blueprint** and connect this repository. Render reads `render.yaml`, creates the database and web service, runs `build.sh`, and waits for `/healthz/` to pass. Render does not run Ollama, so in that setup the summary's wording button falls back to its error message unless a separate Ollama service is added (see 5.2).
 
 ### Local deployment verification
 
-The test was run on 2026-11-16 on a fresh `git clone` (no `.venv`, no `db.sqlite3`, empty model cache), with `./deploy_local.sh` on port 8100:
+The test was last run on 2026-11-17, against the current `main` including the AI pre-visit summary. It used a fresh `git clone` (no `.venv`, no `db.sqlite3`, empty model cache) and `./deploy_local.sh` on port 8100, on a machine **without** Ollama installed:
 
 | Check | Result |
 |---|---|
@@ -211,7 +223,8 @@ The test was run on 2026-11-16 on a fresh `git clone` (no `.venv`, no `db.sqlite
 | Anonymous `GET /dashboard/` | `302` → `/accounts/login/?next=/dashboard/` |
 | Security headers (`DEBUG=False`) | `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: same-origin` |
 | **Primary workflow in a browser** | Log in → dashboard → add concern *"Can't sleep — I lie awake until 3am most nights and feel exhausted at work"* (severity 6) → concern saved → **Find Educational Resources** → *Insomnia and Trouble Sleeping* (0.583), *Fatigue* (0.462) |
-| Monitoring log | `ai.recommend concern=5 results=2 latency_ms=22.5`. The symptom text appears **0 times** in the server log |
+| AI pre-visit summary | **Generate Summary** → "Your AI summary draft is ready" with the factual summary. **✨ Improve Wording with AI** (no Ollama) → friendly message "Unable to improve the wording. Please check that Ollama is running.", HTTP 200, no crash |
+| Monitoring log | `ai.recommend concern=1 results=2 latency_ms=23.5`. Symptom text appears **0 times** in the server log (also checked after the summary requests) |
 | `manage.py check --deploy` (cloud settings) | Only `SECURE_HSTS_PRELOAD` remains (intentionally off; preload is hard to undo) |
 
 ## 5.2 Infrastructure requirements
@@ -225,7 +238,8 @@ Measured on the production-mode run:
 | **RAM** | **~500 MB per worker process**; plan for 2 GB | Gunicorn worker RSS after loading the model: **494 MB**; master: 28 MB. Render's 512 MB Starter plan would run out of memory, hence the Standard (2 GB) plan |
 | **Storage** | ~1 GB for the environment | PyTorch 634 MB, model ~90 MB, whole venv 1.2 GB (Linux CPU wheels are smaller than macOS) |
 | **Database** | Managed Postgres; tiny | 30 articles × 384-float embeddings ≈ 0.3 MB; user data is text rows. Smallest Render Postgres (256 MB) is plenty |
-| **AI inference** | In-process, same container as Django | No separate model server at this scale; the model is loaded once per worker |
+| **AI inference (recommender)** | In-process, same container as Django | No separate model server at this scale; the model is loaded once per worker |
+| **AI inference (summary wording)** | A separate **Ollama** server on the same machine, CPU only | Model `qwen2.5:0.5b`: 494M parameters, Q4_K_M quantized, **398 MB download** (Ollama library page). Expect roughly that much extra RAM plus runtime overhead; **not measured here** because Ollama was not installed on the test machine. Generating ~350 tokens on CPU takes seconds, not milliseconds |
 
 ## 5.3 Cost comparison
 
@@ -245,6 +259,8 @@ Prices checked November 2026 on Render's pricing page and OpenAI's model page.
 | Reliability | No external dependency; works offline | Outages and rate limits from the provider become our outages; needs a fallback |
 | Privacy | **Symptom text never leaves our servers** | Patient symptom text is sent to a third party. Health data would need a vendor agreement (e.g., a HIPAA BAA) and a data-retention review |
 
+**The AI summary's LLM follows the same trade-off.** Today it runs locally through Ollama, so patient text again stays on our machine and there is no per-token cost. In the cloud it would need roughly another 0.5–1 GB of RAM (Render Pro, $85/month, instead of Standard) or its own small instance. The hosted alternative is a chat-completion API, which charges per token and sends symptom text to a third party.
+
 **Recommendation:** keep **A (self-hosted)**. The hosted API is cheaper in dollars because embeddings cost almost nothing. But Care to Share handles personal health information, and privacy plus no external dependency are worth roughly $18/month at pilot scale. If cost became critical, a middle option is **ONNX Runtime** instead of PyTorch. That keeps the same model local while shrinking RAM to fit cheaper instances; we have not measured this.
 
 ## 5.4 Scalability to 10,000 daily active users
@@ -261,7 +277,9 @@ Prices checked November 2026 on Render's pricing page and OpenAI's model page.
 - **Redis** (Render Key Value) for a shared cache and shared rate-limit counters. The current `LocMemCache` is per-process.
 - Static files stay on WhiteNoise. A CDN in front is optional.
 
-**Primary bottleneck:** **memory, not CPU.** Peak AI load (~1.3–7 req/s) is far below one thread's measured 136 req/s, but every worker process holds a ~500 MB copy of PyTorch and the model. Memory therefore caps how many processes fit on each instance. Next comes the database: `recommend_resources` loads every article's embedding from the database and compares them in a Python loop. That is fine for 30 articles, but it grows linearly with the library.
+**Primary bottleneck:** two different limits, one per AI feature.
+- **LLM wording step (CPU):** each "Improve Wording" request generates up to 350 tokens with a 0.5B model, which takes seconds of CPU instead of milliseconds. Even a few hundred requests per peak hour would queue behind each other on one Ollama server. It needs its own inference server(s), a request queue, and a per-user rate limit.
+- **Recommender (memory, not CPU):** Peak AI load (~1.3–7 req/s) is far below one thread's measured 136 req/s, but every worker process holds a ~500 MB copy of PyTorch and the model. Memory therefore caps how many processes fit on each instance. Next comes the database: `recommend_resources` loads every article's embedding from the database and compares them in a Python loop. That is fine for 30 articles, but it grows linearly with the library.
 
 **How AI inference cost changes:**
 - Self-hosted: cost scales with **instances, not requests**. Going from pilot to 10k DAU roughly moves from ~$31 to ~$200/month, mostly for RAM.
@@ -275,7 +293,7 @@ Prices checked November 2026 on Render's pricing page and OpenAI's model page.
 
 **Architectural improvements needed:**
 1. **pgvector** in Postgres (or FAISS) to store embeddings and do nearest-neighbour search in the database once the library grows to thousands of articles.
-2. **A separate inference service** (or ONNX Runtime) so web workers don't each carry a model. Several web processes would then share one model server.
+2. **Separate inference services:** a shared embedding service (or ONNX Runtime) so web workers don't each carry a model, and one or more dedicated **Ollama/LLM servers** behind a queue for the summary wording step. Several web processes would then share one model server.
 3. **A background job queue** (Celery/RQ) for re-embedding the library when articles change.
 4. **Redis** for cache and rate limits shared across instances.
 
@@ -283,15 +301,15 @@ Prices checked November 2026 on Render's pricing page and OpenAI's model page.
 
 | Area | What is implemented | Where |
 |---|---|---|
-| **Environment variables** | Secret key, debug flag, hosts, DB URL and rate limit come from the environment. The app **refuses to start** with `DEBUG=False` and no secret key. The old hard-coded key is gone. Render generates the secret | `config/settings.py`, `render.yaml`, `.env.example`, `.gitignore` |
+| **Environment variables** | `SECRET_KEY` comes from the environment or a git-ignored `.env` file; the app **refuses to start** without it, and the old hard-coded key is gone. `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, `DATABASE_URL`, `DJANGO_HTTPS` and rate limits are environment-driven. Render and `deploy_local.sh` generate the secret automatically | `config/settings.py`, `render.yaml`, `.env.example`, `.gitignore` |
 | **Input validation** | Django forms validate symptom length, severity 1–10, dates and choices. The recommender ignores empty descriptions and caps query text at 3,000 characters | `appointments/forms.py`, `resource_recommender.py` |
 | **Authentication & permissions** | Every patient page is `@login_required`. All queries are filtered by `user=request.user`, so another user's concern returns 404 (tested). Password validators are on. Sessions expire after 8 hours. Repeated failed logins trigger a temporary lockout (see Rate limiting) | `views.py`, `settings.py`, tests |
-| **API key protection** | The AI model is local, so there are **no API keys to leak**. If option B were adopted, the key would live only in an environment variable | design |
+| **API key protection** | Both AI models run locally (sentence-transformers in-process, Ollama on localhost), so there are **no API keys to leak**. The `openai` package is installed only because the summary view imports its error class; no OpenAI key is configured. A hosted API's key would live only in an environment variable | design |
 | **Transport & headers** | With `DEBUG=False`: HTTPS redirect, secure + HttpOnly cookies, HSTS (30 days), nosniff, `X-Frame-Options: DENY`, same-origin referrer policy, CSRF trusted origins | `settings.py` |
-| **Error handling** | The recommendation view catches model and database errors and shows "We couldn't load educational resources right now" with HTTP 200 (tested with a simulated crash). `/healthz/` returns 503 if the DB is down. A model warm-up failure doesn't stop the server | `views.py`, `ai_services/health.py`, `gunicorn.conf.py` |
+| **Error handling** | The recommendation view catches model and database errors and shows "We couldn't load educational resources right now" with HTTP 200 (tested with a simulated crash). `/healthz/` returns 503 if the DB is down. A model warm-up failure doesn't stop the server. The AI summary view catches LLM failures and shows "Unable to improve the wording…" (verified without Ollama) | `views.py`, `ai_services/health.py`, `gunicorn.conf.py` |
 | **Rate limiting** | **AI endpoint:** 20 recommendation requests per user per minute (configurable). Over the limit returns **HTTP 429** with `Retry-After: 60` and a friendly page (tested). **Login (brute-force protection):** after **5 failed attempts for the same username *or* from the same IP within 5 minutes**, logins are refused with HTTP 429 and "Too many failed login attempts. Please wait 5 minutes", even if the next password is correct. The username check is case-insensitive, and a successful login clears that username's counter. Verified in a browser: 5 failures → 6th request 429. 8 tests | `ai_services/ratelimit.py`, `config/login_throttle.py` |
 | **Logging & monitoring** | Logs go to stdout and are collected by Render. Each AI call logs `concern id, result count, latency_ms`. Failed and blocked logins log `login.failed` / `login.locked` with the IP only; usernames are hashed, never logged. Access log via gunicorn. Render health check on `/healthz/` | `settings.LOGGING`, `views.py` |
 | **User privacy** | **Patient text is never logged** (only ids, counts and latency) and is never sent to a third party (local model). The database is managed Postgres with encryption at rest provided by the host | design, `views.py` |
-| **AI-related risks** | Only vetted MedlinePlus articles can be shown, so there is no generated medical text and no hallucinated advice. A disclaimer on the page says the content is educational, not diagnostic. Uncovered symptoms can still get a loosely related article (Failure 2), and there is **no emergency detection yet** (Failure 3). This is the most important remaining risk, with a concrete fix proposed | template, 4.3 |
+| **AI-related risks** | **Recommender:** only vetted MedlinePlus articles can be shown, so it generates no medical text. **Summary LLM:** the prompt forbids inventing symptoms, changing severities or dates, diagnosing or advising, and treats input as data. Patient questions are left out of the request, temperature is 0, the factual summary is never overwritten, and the patient must review the suggestion before saving. A 0.5B model can still miss these rules, so the human review step matters. A disclaimer on the page says the content is educational, not diagnostic. Uncovered symptoms can still get a loosely related article (Failure 2), and there is **no emergency detection yet** (Failure 3). This is the most important remaining risk, with a concrete fix proposed | template, 4.3 |
 
-**Not yet done (honest gaps):** emergency/red-flag detection (Failure 3), a shared Redis cache for rate limits across multiple instances, an error-tracking service (e.g., Sentry), login throttling on the Django admin login (`/admin/login/` still uses the default view), and a formal HIPAA review before handling real patient data.
+**Not yet done (honest gaps):** emergency/red-flag detection (Failure 3), a rate limit and faithfulness evaluation for the LLM wording step (Failure 6), a shared Redis cache for rate limits across multiple instances, an error-tracking service (e.g., Sentry), login throttling on the Django admin login (`/admin/login/` still uses the default view), and a formal HIPAA review before handling real patient data.

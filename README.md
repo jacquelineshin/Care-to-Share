@@ -10,12 +10,13 @@ A Django app that helps patients prepare for doctor visits: track appointments, 
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+echo "SECRET_KEY=$(python -c 'import secrets; print(secrets.token_urlsafe(50))')" > .env
 python manage.py migrate
 python manage.py seed_demo        # 30 articles + embeddings + a demo user
 python manage.py runserver
 ```
 
-Open http://localhost:8000. The demo user is `demo`; the password is in `ai_services/management/commands/seed_demo.py`. The first run downloads the `all-MiniLM-L6-v2` model (~90 MB).
+Open http://localhost:8000. The demo user is `demo`; the password is in `ai_services/management/commands/seed_demo.py`. The first run downloads the `all-MiniLM-L6-v2` model (~90 MB). The AI summary's "Improve Wording" button also needs [Ollama](https://ollama.com) running with `ollama pull qwen2.5:0.5b`; without it, that button shows an error and everything else works.
 
 ## Production-mode deployment (local)
 
